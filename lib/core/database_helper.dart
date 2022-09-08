@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
+//ikinci commit test
 class DatabaseHelper {
   static DatabaseHelper? _databaseHelper;
   static Database? _database;
