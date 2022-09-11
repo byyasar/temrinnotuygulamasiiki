@@ -44,13 +44,6 @@ class DersDatabaseProvider extends DatabaseProvider<DersModel> {
     }
   }
 
-  @override
-  Future<bool> insertItem(DersModel model) async {
-    _database ??= await open();
-    int _ders = await _database!.insert(_dersTableName, model.toJson());
-    return _ders != null;
-  }
-
   Future<void> createTable(Database db) async {
     await db.execute(
       '''CREATE TABLE $_dersTableName (
@@ -62,10 +55,23 @@ class DersDatabaseProvider extends DatabaseProvider<DersModel> {
   }
 
   @override
+  Future<bool> insertItem(DersModel model) async {
+    _database ??= await open();
+    if (_database != null) {
+      await _database!.insert(_dersTableName, model.toJson());
+      return true;
+    }
+    return false;
+  }
+
+  @override
   Future<bool> removeItem(int id) async {
     _database ??= await open();
-    var _ders = await _database!.delete(_dersTableName, where: '$columnId=?', whereArgs: [id]);
-    return _ders != null;
+    if (_database != null) {
+      await _database!.delete(_dersTableName, where: '$columnId=?', whereArgs: [id]);
+      return true;
+    }
+    return false;
   }
 
   @override
@@ -76,12 +82,10 @@ class DersDatabaseProvider extends DatabaseProvider<DersModel> {
   @override
   Future<bool> updateItem(int id, DersModel model) async {
     _database ??= await open();
-    var _ders = await _database!.update(
-      _dersTableName,
-      model.toJson(),
-      where: '$columnId = ?',
-      whereArgs: [id],
-    );
-    return _ders != null;
+    if (_database != null) {
+      await _database!.update(_dersTableName, model.toJson(), where: '$columnId = ?', whereArgs: [id]);
+      return true;
+    }
+    return false;
   }
 }
