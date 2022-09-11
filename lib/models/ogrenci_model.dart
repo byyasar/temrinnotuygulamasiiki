@@ -1,4 +1,9 @@
-class OgrenciModel {
+import 'package:temrinnotuygulamasiiki/core/init/database/database_model.dart';
+import 'package:json_annotation/json_annotation.dart';
+part 'ogrenci_model.g.dart';
+
+@JsonSerializable()
+class OgrenciModel extends DatabaseModel<OgrenciModel> {
   int? id;
   String? ogrenciAdSoyad;
   int? ogrenciNu;
@@ -7,21 +12,13 @@ class OgrenciModel {
 
   OgrenciModel({this.id, this.ogrenciAdSoyad, this.ogrenciNu, this.sinifId, this.ogrenciResim});
 
-  OgrenciModel.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    ogrenciAdSoyad = json['ogrenciAdSoyad'];
-    ogrenciNu = json['ogrenciNu'];
-    sinifId = json['sinifId'];
-    ogrenciResim = json['ogrenciResim'];
+  @override
+  OgrenciModel fromJson(Map<String, Object> json) {
+    return _$OgrenciModelFromJson(json);
   }
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['id'] = id;
-    data['ogrenciAdSoyad'] = ogrenciAdSoyad;
-    data['ogrenciNu'] = ogrenciNu;
-    data['sinifId'] = sinifId;
-    data['ogrenciResim'] = ogrenciResim;
-    return data;
+  @override
+  Map<String, Object?> toJson() {
+    return _$OgrenciModelToJson(this);
   }
 }

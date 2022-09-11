@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:temrinnotuygulamasiiki/models/ogrenci_model.dart';
 
 //ikinci commit test
 class DatabaseHelper {
@@ -45,7 +46,7 @@ class DatabaseHelper {
       } catch (_) {}
 
       // Copy from asset
-      ByteData data = await rootBundle.load(join("assets", "deneme.db"));
+      ByteData data = await rootBundle.load(join("asset/database", "deneme.db"));
       List<int> bytes = data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
 
       // Write and flush the bytes written
@@ -62,6 +63,15 @@ class DatabaseHelper {
     var sonuc = await db.rawQuery('select * from tblOgrenci');
     print(sonuc);
     return sonuc;
+  }
+
+  Future<List> ogrenciListesiGetir() async {
+    var db = await _getDatabase();
+    OgrenciModel ogrenciModel = OgrenciModel();
+    List ogrenciMaps = await db.rawQuery('select * from tblOgrenci');
+    print(ogrenciMaps);
+    return ogrenciMaps;
+    //return ogrenciMaps.map((e) => OgrenciModel.fromJson(e)).toList();
   }
 
   // Future<List<Kategori>> kategoriListesiniGetir() async {

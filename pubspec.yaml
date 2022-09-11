@@ -34,11 +34,22 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
+
+  # database
   sqflite: ^2.0.3+1
+  path_provider: ^2.0.11
+  sqflite_common_ffi: ^2.1.1+1
+  # core utilities
+  kartal: ^2.1.0
+  
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  json_annotation: ^4.6.0
+  build_runner: ^2.2.0
+  json_serializable: ^6.3.1
+
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
@@ -53,7 +64,9 @@ dev_dependencies:
 # The following section is specific to Flutter packages.
 flutter:
   assets:
-    - assets/deneme.db
+    - asset/database/
+    - asset/svg/
+    - asset/image/
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in

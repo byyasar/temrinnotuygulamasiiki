@@ -1,21 +1,23 @@
-class DersModel {
+import 'package:json_annotation/json_annotation.dart';
+import 'package:temrinnotuygulamasiiki/core/init/database/database_model.dart';
+
+part 'ders_model.g.dart';
+
+@JsonSerializable()
+class DersModel extends DatabaseModel<DersModel> {
   int? id;
   String? dersAd;
   int? sinifId;
 
   DersModel({this.id, this.dersAd, this.sinifId});
 
-  DersModel.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    dersAd = json['dersAd'];
-    sinifId = json['sinifId'];
+  @override
+  DersModel fromJson(Map<String, Object?> json) {
+    return _$DersModelFromJson(json);
   }
 
+  @override
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['id'] = id;
-    data['dersAd'] = dersAd;
-    data['sinifId'] = sinifId;
-    return data;
+    return _$DersModelToJson(this);
   }
 }
