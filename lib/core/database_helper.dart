@@ -2,7 +2,8 @@ import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
-import 'package:temrinnotuygulamasiiki/models/ogrenci_model.dart';
+import 'package:temrinnotuygulamasiiki/constans/database_constans.dart';
+import 'package:temrinnotuygulamasiiki/models/ogrenci/ogrenci_model.dart';
 
 //ikinci commit test
 class DatabaseHelper {
@@ -28,9 +29,18 @@ class DatabaseHelper {
     }
   }
 
+  Future<Database> getDatabase() async {
+    if (_database == null) {
+      _database = await _initializeDatabase();
+      return _database!;
+    } else {
+      return _database!;
+    }
+  }
+
   Future<Database> _initializeDatabase() async {
     var databasesPath = await getDatabasesPath();
-    var path = join(databasesPath, "deneme3.db");
+    var path = join(databasesPath, DatabaseConstants().databaseName);
     print(path);
 
 // Check if the database exists

@@ -1,12 +1,5 @@
 {
-    "sqltools.connections": [
-        {
-            "previewLimit": 50,
-            "driver": "SQLite",
-            "database": "${workspaceFolder:temrinnotuygulamasiiki}/assets/deneme.db",
-            "name": "temrinnot"
-        }
-    ],
+    "sqltools.connections": [],
     "sqltools.useNodeRuntime": true,
     "cmake.configureOnOpen": true
 }
