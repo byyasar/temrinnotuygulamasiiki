@@ -2,8 +2,10 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:temrinnotuygulamasiiki/cubit/ders_cubit.dart';
+import 'package:temrinnotuygulamasiiki/cubit/ders_state.dart';
 import 'package:temrinnotuygulamasiiki/models/ders/ders_database_provider.dart';
 import 'package:temrinnotuygulamasiiki/models/ders/ders_model.dart';
+import 'package:temrinnotuygulamasiiki/widget/loading_center_widget.dart';
 
 class AnapencereView extends StatefulWidget {
   const AnapencereView({Key? key}) : super(key: key);
@@ -15,115 +17,114 @@ class AnapencereView extends StatefulWidget {
 class _AnapencereViewState extends State<AnapencereView> {
   List<dynamic> ogrenciList = [];
   List<DersModel> durum = [];
-  DersDatabaseProvider dersDatabaseProvider = DersDatabaseProvider();
 
   @override
   void initState() {
     super.initState();
-    //verileriGetir();
-  }
-
-  verileriGetir() async {
-    // var databaseHelper = DatabaseHelper();
-    // ogrenciList = await databaseHelper.ogrenciListesiGetir();
-
-    // await dersDatabaseProvider.open();
-    // durum = await dersDatabaseProvider.getList();
-    // setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context_) => DersCubit(databaseProvider: DersDatabaseProvider()),
-      child: const PageView(),
-    );
-  }
-}
-
-class PageView extends StatelessWidget {
-  const PageView({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(),
-      floatingActionButton: Column(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          FloatingActionButton(
-            child: const Icon(Icons.all_inbox),
-            onPressed: () async {
-              context.read<DersCubit>().dersleriGetir();
-            },
-          ),
-          FloatingActionButton(
-            child: const Icon(Icons.update),
-            onPressed: () async {
-              //DersDatabaseProvider dersDatabaseProvider = DersDatabaseProvider();
-              // await dersDatabaseProvider.open();
-              // DersModel dersModel = DersModel();
-              // dersModel.dersAd = "yaşar ders";
-              // dersModel.sinifId = 2;
-              // dersModel.id = 8;
-              // DersModel derslist;
-              // bool durum = await dersDatabaseProvider.updateItem(8, dersModel);
-            },
-          ),
-          FloatingActionButton(
-            child: const Icon(Icons.remove),
-            onPressed: () async {
-              //DersDatabaseProvider dersDatabaseProvider = DersDatabaseProvider();
-              context.read<DersCubit>().dersSil(id: 19);
-            },
-          ),
-          FloatingActionButton(
-            child: const Icon(Icons.add),
-            onPressed: () async {
-              DersModel dersModel = DersModel();
-              dersModel.dersAd = "pc";
-              dersModel.sinifId = 2;
-              context.read<DersCubit>().dersKaydet(dersModel: dersModel);
-            },
-          ),
-          FloatingActionButton(
-            child: const Icon(Icons.list),
-            onPressed: () async {
-              DersModel dersModel = DersModel();
-              dersModel.dersAd = "web tasarım";
-              dersModel.sinifId = 2;
-              dersModel.id = 1;
-              context.read<DersCubit>().dersKaydet(dersModel: dersModel);
-              // context.read<DersCubit>().dersKaydet(id: 5, dersModel: dersModel);
-            },
-          ),
-        ],
-      ),
-      body: BlocBuilder<DersCubit, DersState>(
-        builder: (context, state) {
-          if (state is DersLoaded) {
-            List<DersModel> list = [];
-            list = state.ders ?? [];
-            return ListView.builder(
-              itemCount: list.length,
-              itemBuilder: (BuildContext context, int index) {
-                return Text(list[index].toString());
+      child: Scaffold(
+        appBar: AppBar(
+          leading:  const LoadingCenter(),
+        ),
+        floatingActionButton: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            FloatingActionButton(
+              child: const Icon(Icons.all_inbox),
+              onPressed: () async {
+                context.read<DersCubit>().dersleriGetir();
               },
-            );
-          } else if (state is DersLoading) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (state is DersFailure) {
-            return Text('$state hata oluştu');
-          } else {
-            return SizedBox(
-              height: 1,
-            );
-          }
-        },
+            ),
+            FloatingActionButton(
+              child: const Icon(Icons.update),
+              onPressed: () async {
+                //DersDatabaseProvider dersDatabaseProvider = DersDatabaseProvider();
+                // await dersDatabaseProvider.open();
+                // DersModel dersModel = DersModel();
+                // dersModel.dersAd = "yaşar ders";
+                // dersModel.sinifId = 2;
+                // dersModel.id = 8;
+                // DersModel derslist;
+                // bool durum = await dersDatabaseProvider.updateItem(8, dersModel);
+              },
+            ),
+            FloatingActionButton(
+              child: const Icon(Icons.remove),
+              onPressed: () async {
+                //DersDatabaseProvider dersDatabaseProvider = DersDatabaseProvider();
+                //context.read<DersCubit>().dersSil(id: 19);
+              },
+            ),
+            FloatingActionButton(
+              child: const Icon(Icons.add),
+              onPressed: () async {
+                DersModel dersModel = DersModel();
+                dersModel.dersAd = "pc";
+                dersModel.sinifId = 2;
+                //context.read<DersCubit>().dersKaydet(dersModel: dersModel);
+              },
+            ),
+            FloatingActionButton(
+              child: const Icon(Icons.list),
+              onPressed: () async {
+                DersModel dersModel = DersModel();
+                dersModel.dersAd = "web tasarım";
+                dersModel.sinifId = 2;
+                dersModel.id = 1;
+                // context.read<DersCubit>().dersKaydet(dersModel: dersModel);
+                // context.read<DersCubit>().dersKaydet(id: 5, dersModel: dersModel);
+              },
+            ),
+          ],
+        ),
+        body: BlocBuilder<DersCubit, DersState>(
+          builder: (context, state) {
+            // if (state is DersLoaded) {
+            //   List<DersModel> list = [];
+            //   list = state.ders ?? [];
+            //   return ListView.builder(
+            //     itemCount: list.length,
+            //     itemBuilder: (BuildContext context, int index) {
+            //       return Text(list[index].toString());
+            //     },
+            //   );
+            // } else if (state is DersLoading) {
+            //   return const Center(child: CircularProgressIndicator());
+            // } else if (state is DersFailure) {
+            //   return Text('$state hata oluştu');
+            if (state.isCompleted) {
+              List<DersModel> list = [];
+              list = state.dersModel ?? [];
+              return ListView.builder(
+                itemCount: list.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return Text(list[index].toString());
+                },
+              );
+            } else {
+              return const SizedBox(height: 1);
+            }
+          },
+        ),
       ),
     );
   }
 }
+
+// class PageView extends StatelessWidget {
+//   const PageView({Key? key}) : super(key: key);
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return 
+//   }
+// }
+
 
 /*
 

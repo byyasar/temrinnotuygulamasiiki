@@ -10,14 +10,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Material App',
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Material App Bar'),
-        ),
-        body: const Center(
-          child: AnapencereView(),
-        ),
-      ),
+      theme: ThemeData.dark(),
+      home: const AnapencereView(),
     );
   }
 }

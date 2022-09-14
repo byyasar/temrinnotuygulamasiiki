@@ -40,7 +40,7 @@ class DatabaseHelper {
 
   Future<Database> _initializeDatabase() async {
     var databasesPath = await getDatabasesPath();
-    var path = join(databasesPath, DatabaseConstants().databaseName);
+    var path = join(databasesPath, DatabaseConstants.instance.databaseName);
     print(path);
 
 // Check if the database exists

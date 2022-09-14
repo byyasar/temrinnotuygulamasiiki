@@ -1,3 +1,10 @@
 class DatabaseConstants {
-  String databaseName = "deneme3";
+  static DatabaseConstants? _instance;
+  static DatabaseConstants get instance {
+    _instance ??= DatabaseConstants._init();
+    return _instance!;
+  }
+
+  DatabaseConstants._init();
+  final String databaseName = "deneme3";
 }
