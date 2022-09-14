@@ -20,4 +20,9 @@ class DersModel extends DatabaseModel<DersModel> {
   Map<String, dynamic> toJson() {
     return _$DersModelToJson(this);
   }
+
+  @override
+  String toString() {
+    return '$id- $dersAd - $sinifId';
+  }
 }
