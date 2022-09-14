@@ -74,31 +74,27 @@ class PageView extends StatelessWidget {
             child: const Icon(Icons.remove),
             onPressed: () async {
               //DersDatabaseProvider dersDatabaseProvider = DersDatabaseProvider();
-              // await dersDatabaseProvider.open();
-              // bool durum = await dersDatabaseProvider.removeItem(6);
+              context.read<DersCubit>().dersSil(id: 19);
             },
           ),
           FloatingActionButton(
             child: const Icon(Icons.add),
             onPressed: () async {
-              //DersDatabaseProvider dersDatabaseProvider = DersDatabaseProvider();
-              // await dersDatabaseProvider.open();
-              // DersModel dersModel = DersModel();
-              // dersModel.dersAd = "pc";
-              // dersModel.sinifId = 2;
-              // DersModel derslist;
-              // bool durum = await dersDatabaseProvider.insertItem(dersModel);
-              // inspect(durum);
+              DersModel dersModel = DersModel();
+              dersModel.dersAd = "pc";
+              dersModel.sinifId = 2;
+              context.read<DersCubit>().dersKaydet(dersModel: dersModel);
             },
           ),
           FloatingActionButton(
             child: const Icon(Icons.list),
             onPressed: () async {
-              // await dersDatabaseProvider.open();
-              // DersModel dersModel;
-              // int id = 5;
-              // dersModel = await dersDatabaseProvider.getItem(id);
-              // inspect(dersModel);
+              DersModel dersModel = DersModel();
+              dersModel.dersAd = "web tasarım";
+              dersModel.sinifId = 2;
+              dersModel.id = 1;
+              context.read<DersCubit>().dersKaydet(dersModel: dersModel);
+              // context.read<DersCubit>().dersKaydet(id: 5, dersModel: dersModel);
             },
           ),
         ],
