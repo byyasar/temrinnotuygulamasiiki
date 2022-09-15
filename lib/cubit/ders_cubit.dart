@@ -18,38 +18,24 @@ class DersCubit extends Cubit<DersState> {
     emit(state.copyWith(isLoading: true));
     final dersList = await _databaseProvider.getList();
     emit(state.copyWith(dersModel: dersList, isLoading: false, isCompleted: true));
-    // emit(DersState());
-    // try {
-    //   final dersList = await _databaseProvider.getList();
-    //   emit(DersState(ders: dersList));
-    // } on Exception {
-    //   emit(const DersFailure());
-    // }
+   }
+    
+  Future<void> dersKaydet({int? id, required DersModel dersModel}) async {
+     emit(state.copyWith(isLoading: true));
+   
+      if (id == null) {
+        await _databaseProvider.insertItem(dersModel);
+      } else {
+        await _databaseProvider.updateItem(id, dersModel);
+      }
+      final dersList = await _databaseProvider.getList();
+     emit(state.copyWith(dersModel: dersList, isLoading: false, isCompleted: true));
   }
 
-  // Future<void> dersSil({required int id}) async {
-  //   emit(DersLoading());
-  //   try {
-  //     await _databaseProvider.removeItem(id);
-  //     final dersList = await _databaseProvider.getList();
-  //     emit(DersLoaded(ders: dersList));
-  //   } on Exception {
-  //     emit(const DersFailure());
-  //   }
-  // }
-
-  // Future<void> dersKaydet({int? id, required DersModel dersModel}) async {
-  //   emit(DersLoading());
-  //   try {
-  //     if (id == null) {
-  //       await _databaseProvider.insertItem(dersModel);
-  //     } else {
-  //       await _databaseProvider.updateItem(id, dersModel);
-  //     }
-  //     final dersList = await _databaseProvider.getList();
-  //     emit(DersLoaded(ders: dersList));
-  //   } on Exception {
-  //     emit(const DersFailure());
-  //   }
-  // }
+  Future<void> dersSil({required int id}) async {
+    emit(state.copyWith(isLoading: true));
+      await _databaseProvider.removeItem(id);
+      final dersList = await _databaseProvider.getList();
+     emit(state.copyWith(dersModel: dersList, isLoading: false, isCompleted: true));
+  }
 }
