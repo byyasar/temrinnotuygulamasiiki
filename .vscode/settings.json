@@ -1,5 +1,6 @@
 {
     "sqltools.connections": [],
     "sqltools.useNodeRuntime": true,
-    "cmake.configureOnOpen": true
+    "cmake.configureOnOpen": true,
+    "markdown-todo.sortByCount": false
 }

@@ -1,6 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:temrinnotuygulamasiiki/models/ders/ders_model.dart';
-
+import 'package:temrinnotuygulamasiiki/features/ders/model/ders_model.dart';
 
 
 class DersState extends Equatable {

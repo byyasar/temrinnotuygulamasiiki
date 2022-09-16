@@ -1,10 +1,11 @@
 import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:temrinnotuygulamasiiki/cubit/ders_cubit.dart';
-import 'package:temrinnotuygulamasiiki/cubit/ders_state.dart';
-import 'package:temrinnotuygulamasiiki/models/ders/ders_database_provider.dart';
-import 'package:temrinnotuygulamasiiki/models/ders/ders_model.dart';
+import 'package:temrinnotuygulamasiiki/features/ders/cubit/ders_cubit.dart';
+import 'package:temrinnotuygulamasiiki/features/ders/cubit/ders_state.dart';
+import 'package:temrinnotuygulamasiiki/features/ders/model/ders_model.dart';
+import 'package:temrinnotuygulamasiiki/features/ders/service/ders_database_provider.dart';
+import 'package:temrinnotuygulamasiiki/features/ders/widget/ders_card.dart';
 import 'package:temrinnotuygulamasiiki/widget/loading_center_widget.dart';
 
 class AnapencereView extends StatefulWidget {
@@ -27,84 +28,121 @@ class _AnapencereViewState extends State<AnapencereView> {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => DersCubit(databaseProvider: DersDatabaseProvider()),
-      child:BlocBuilder<DersCubit, DersState>(
-              builder: (context, state) {
-          return Scaffold(
-            appBar: AppBar(
-              leading: state.isLoading? const LoadingCenter():const SizedBox(),
-            ),
-            floatingActionButton: Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                FloatingActionButton(
-                  child: const Icon(Icons.all_inbox),
-                  onPressed: () async {
-                   // context.read<DersCubit>().dersleriGetir();
+      child: BlocBuilder<DersCubit, DersState>(builder: (context, state) {
+        return Scaffold(
+          appBar: AppBar(
+            leading: state.isLoading ? const LoadingCenter() : const SizedBox(),
+          ),
+          floatingActionButton: Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              FloatingActionButton(
+                child: const Icon(Icons.all_inbox),
+                onPressed: () async {
+                  // context.read<DersCubit>().dersleriGetir();
+                },
+              ),
+              FloatingActionButton(
+                child: const Icon(Icons.remove),
+                onPressed: () async {
+                  context.read<DersCubit>().dersSil(id: 3);
+                },
+              ),
+              FloatingActionButton(
+                child: const Icon(Icons.add),
+                onPressed: () async {
+                  DersModel dersModel = DersModel();
+                  dersModel.dersAd = "pc";
+                  dersModel.sinifId = 2;
+                  context.read<DersCubit>().dersKaydet(dersModel: dersModel);
+                },
+              ),
+              FloatingActionButton(
+                child: const Icon(Icons.list),
+                onPressed: () async {
+                  DersModel dersModel = DersModel();
+                  dersModel.dersAd = "web tasarım";
+                  dersModel.sinifId = 2;
+                  dersModel.id = 1;
+                  context.read<DersCubit>().dersKaydet(dersModel: dersModel);
+                  // context.read<DersCubit>().dersKaydet(id: 5, dersModel: dersModel);
+                },
+              ),
+            ],
+          ),
+          body: BlocBuilder<DersCubit, DersState>(
+            builder: (context, state) {
+              // if (state is DersLoaded) {
+              //   List<DersModel> list = [];
+              //   list = state.ders ?? [];
+              //   return ListView.builder(
+              //     itemCount: list.length,
+              //     itemBuilder: (BuildContext context, int index) {
+              //       return Text(list[index].toString());
+              //     },
+              //   );
+              // } else if (state is DersLoading) {
+              //   return const Center(child: CircularProgressIndicator());
+              // } else if (state is DersFailure) {
+              //   return Text('$state hata oluştu');
+              if (state.isCompleted) {
+                List<DersModel> list = [];
+                list = state.dersModel ?? [];
+                return ListView.builder(
+                  itemCount: list.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    //Text(list[index].toString());
+                    return DersCard(
+                        transaction: list[index],
+                        index: index,
+                        butons: buildButtons(context, list[index]));
                   },
-                ),
-              
-               
-                FloatingActionButton(
-                  child: const Icon(Icons.remove),
-                  onPressed: () async {
-                    context.read<DersCubit>().dersSil(id: 3);
-                  },
-                ),
-                FloatingActionButton(
-                  child: const Icon(Icons.add),
-                  onPressed: () async {
-                    DersModel dersModel = DersModel();
-                    dersModel.dersAd = "pc";
-                    dersModel.sinifId = 2;
-                    context.read<DersCubit>().dersKaydet(dersModel: dersModel);
-                  },
-                ),
-                FloatingActionButton(
-                  child: const Icon(Icons.list),
-                  onPressed: () async {
-                    DersModel dersModel = DersModel();
-                    dersModel.dersAd = "web tasarım";
-                    dersModel.sinifId = 2;
-                    dersModel.id = 1;
-                    context.read<DersCubit>().dersKaydet(dersModel: dersModel);
-                    // context.read<DersCubit>().dersKaydet(id: 5, dersModel: dersModel);
-                  },
-                ),
-              ],
-            ),
-            body: BlocBuilder<DersCubit, DersState>(
-              builder: (context, state) {
-                // if (state is DersLoaded) {
-                //   List<DersModel> list = [];
-                //   list = state.ders ?? [];
-                //   return ListView.builder(
-                //     itemCount: list.length,
-                //     itemBuilder: (BuildContext context, int index) {
-                //       return Text(list[index].toString());
-                //     },
-                //   );
-                // } else if (state is DersLoading) {
-                //   return const Center(child: CircularProgressIndicator());
-                // } else if (state is DersFailure) {
-                //   return Text('$state hata oluştu');
-                if (state.isCompleted) {
-                  List<DersModel> list = [];
-                  list = state.dersModel ?? [];
-                  return ListView.builder(
-                    itemCount: list.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      return Text(list[index].toString());
-                    },
-                  );
-                } else {
-                  return const SizedBox(height: 1);
-                }
-              },
-            ),
-          );
-        }
-      ),
+                );
+              } else {
+                return const SizedBox(height: 1);
+              }
+            },
+          ),
+        );
+      }),
     );
+  }
+
+  Widget buildButtons(BuildContext context, DersModel transaction) => Row(
+        children: [
+          Expanded(
+            child: TextButton.icon(
+                label: const Text('Düzenle'),
+                icon: const Icon(Icons.edit),
+                onPressed: () {} //=> Navigator.of(context).push(
+                // MaterialPageRoute(
+                // builder: (context) => DersDialog(
+                //   transaction: transaction,
+                //   onClickedDone: (id, dersad, sinifId) => editTransaction(transaction, id, dersad, sinifId),
+                // ),
+                //),
+                // ),
+                ),
+          ),
+          Expanded(
+            child: TextButton.icon(
+              label: const Text('Sil'),
+              icon: const Icon(Icons.delete),
+              onPressed: () => deleteTransaction(transaction),
+            ),
+          )
+        ],
+      );
+
+  deleteTransaction(DersModel dersModel) {
+    //_dersListesiHelper.deleteItem(dersModel);
+  }
+
+  editTransaction(DersModel dersModel, int id, String dersad, int sinifId) {
+    dersModel.id = id;
+    dersModel.dersAd = dersad;
+    dersModel.sinifId = sinifId;
+    //dersModel.save();
   }
 }
 

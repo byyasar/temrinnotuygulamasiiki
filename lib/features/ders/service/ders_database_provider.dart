@@ -1,7 +1,7 @@
 import 'package:sqflite/sqflite.dart';
 import 'package:temrinnotuygulamasiiki/core/database_helper.dart';
 import 'package:temrinnotuygulamasiiki/core/init/database/database_provider.dart';
-import 'package:temrinnotuygulamasiiki/models/ders/ders_model.dart';
+import 'package:temrinnotuygulamasiiki/features/ders/model/ders_model.dart';
 
 class DersDatabaseProvider extends DatabaseProvider<DersModel> {
   final String _dersTableName = "tblDers";

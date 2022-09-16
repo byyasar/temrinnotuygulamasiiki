@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:temrinnotuygulamasiiki/constans/database_constans.dart';
-import 'package:temrinnotuygulamasiiki/models/ogrenci/ogrenci_model.dart';
+import 'package:temrinnotuygulamasiiki/features/ogrenci/ogrenci_model.dart';
 
 //ikinci commit test
 class DatabaseHelper {

@@ -1,9 +1,9 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
-import 'package:temrinnotuygulamasiiki/cubit/ders_state.dart';
-import 'package:temrinnotuygulamasiiki/models/ders/ders_database_provider.dart';
-import 'package:temrinnotuygulamasiiki/models/ders/ders_model.dart';
+import 'package:temrinnotuygulamasiiki/features/ders/cubit/ders_state.dart';
+import 'package:temrinnotuygulamasiiki/features/ders/model/ders_model.dart';
+import 'package:temrinnotuygulamasiiki/features/ders/service/ders_database_provider.dart';
 
 class DersCubit extends Cubit<DersState> {
   DersCubit({required DersDatabaseProvider databaseProvider})
