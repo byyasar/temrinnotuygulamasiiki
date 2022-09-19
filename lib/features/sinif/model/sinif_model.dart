@@ -10,12 +10,17 @@ class SinifModel extends DatabaseModel<SinifModel> {
   SinifModel({this.id, this.sinifAd});
 
   @override
-  SinifModel fromJson(Map<String, Object> json) {
+  SinifModel fromJson(Map<String, Object?> json) {
     return _$SinifModelFromJson(json);
   }
 
   @override
-  Map<String, Object?> toJson() {
+  Map<String, dynamic> toJson() {
     return _$SinifModelToJson(this);
+  }
+
+  @override
+  String toString() {
+    return '$id- $sinifAd';
   }
 }

@@ -30,7 +30,7 @@ class _DersDialogState extends State<DersDialog> {
 
     if (widget.transaction != null) {
       final transaction = widget.transaction!;
-      dersadController.text = transaction.dersAd.toString();
+      dersadController.text = transaction.dersAd??"";
     }
     // if (transactionsSinif.isEmpty) {
     //   transactionsSinif =

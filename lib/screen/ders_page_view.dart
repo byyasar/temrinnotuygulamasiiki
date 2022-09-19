@@ -1,6 +1,7 @@
-import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:temrinnotuygulamasiiki/widget/build_drawer.dart';
+import 'package:temrinnotuygulamasiiki/core/widget/custom_appbar.dart';
 import 'package:temrinnotuygulamasiiki/features/ders/cubit/ders_cubit.dart';
 import 'package:temrinnotuygulamasiiki/features/ders/cubit/ders_state.dart';
 import 'package:temrinnotuygulamasiiki/features/ders/dialog/ders_dialog.dart';
@@ -9,14 +10,14 @@ import 'package:temrinnotuygulamasiiki/features/ders/service/ders_database_provi
 import 'package:temrinnotuygulamasiiki/features/ders/widget/ders_card.dart';
 import 'package:temrinnotuygulamasiiki/widget/loading_center_widget.dart';
 
-class AnapencereView extends StatefulWidget {
-  const AnapencereView({Key? key}) : super(key: key);
+class DersPageView extends StatefulWidget {
+  const DersPageView({Key? key}) : super(key: key);
 
   @override
-  State<AnapencereView> createState() => _AnapencereViewState();
+  State<DersPageView> createState() => _DersPageViewState();
 }
 
-class _AnapencereViewState extends State<AnapencereView> {
+class _DersPageViewState extends State<DersPageView> {
   List<dynamic> ogrenciList = [];
   List<DersModel> durum = [];
   //late final DersDatabaseProvider dersDatabaseProvider;
@@ -34,9 +35,13 @@ class _AnapencereViewState extends State<AnapencereView> {
       create: (context) => DersCubit(databaseProvider: DersDatabaseProvider()),
       child: BlocBuilder<DersCubit, DersState>(builder: (context, state) {
         return Scaffold(
-          appBar: AppBar(
-            leading: state.isLoading ? const LoadingCenter() : const SizedBox(),
+          //appBar: customAppBar(context, 'Database İşlemleri'),
+          drawer: buildDrawer(context),
+          appBar: customAppBar(
+            context,
+            state.isLoading ? const LoadingCenter() : const Text('Dersler'),
           ),
+
           floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
           floatingActionButton: _buildFloatingActionButton(context),
           // floatingActionButton: FloatingActionButton(
@@ -141,7 +146,8 @@ class _AnapencereViewState extends State<AnapencereView> {
                 MaterialPageRoute(
                   builder: (_) => DersDialog(
                     transaction: transaction,
-                    onClickedDone: (id, dersad, sinifId) => editTransaction(context, transaction, id??0, dersad, sinifId),
+                    onClickedDone: (id, dersad, sinifId) =>
+                        editTransaction(context, transaction, id ?? 0, dersad, sinifId),
                   ),
                 ),
               ),
@@ -158,7 +164,6 @@ class _AnapencereViewState extends State<AnapencereView> {
       );
 
   deleteTransaction(BuildContext context, DersModel dersModel) {
-    //BlocProvider.of<DersCubit>(context).dersSil(id: dersModel.id!);
     context.read<DersCubit>().dersSil(id: dersModel.id!);
   }
 
@@ -167,19 +172,9 @@ class _AnapencereViewState extends State<AnapencereView> {
     dersModel.dersAd = dersad;
     dersModel.sinifId = sinifId;
     context.read<DersCubit>().dersKaydet(id: id, dersModel: dersModel);
-    //dersModel.save();
   }
 }
 
-
-// class PageView extends StatelessWidget {
-//   const PageView({Key? key}) : super(key: key);
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return 
-//   }
-// }
 
 
 /*
