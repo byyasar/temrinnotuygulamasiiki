@@ -37,8 +37,7 @@ class _AnapencereViewState extends State<AnapencereView> {
           appBar: AppBar(
             leading: state.isLoading ? const LoadingCenter() : const SizedBox(),
           ),
-          floatingActionButtonLocation:
-              FloatingActionButtonLocation.centerDocked,
+          floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
           floatingActionButton: _buildFloatingActionButton(context),
           // floatingActionButton: FloatingActionButton(
           //     shape: RoundedRectangleBorder(
@@ -79,10 +78,7 @@ class _AnapencereViewState extends State<AnapencereView> {
                   itemCount: list.length,
                   itemBuilder: (BuildContext context, int index) {
                     //Text(list[index].toString());
-                    return DersCard(
-                        transaction: list[index],
-                        index: index,
-                        butons: buildButtons(context, list[index]));
+                    return DersCard(transaction: list[index], index: index, butons: buildButtons(context, list[index]));
                   },
                 );
               } else {
@@ -95,11 +91,11 @@ class _AnapencereViewState extends State<AnapencereView> {
     );
   }
 
-  Future addTransaction(int id, String? dersad, int sinifId) async {
+  Future addTransaction(int? id, String? dersad, int sinifId) async {
     //DersModel dersModel = DersModel(id: id, dersAd: dersad, sinifId: sinifId);
     // _dersListesiHelper.addItem(dersModel);
     //await dersDatabaseProvider.open();
-    dersModel.dersAd = dersad??"";
+    dersModel.dersAd = dersad ?? "";
     dersModel.sinifId = 2;
     dersModel.id = null;
     //context.read<DersCubit>().dersKaydet(dersModel: dersModel);
@@ -112,7 +108,7 @@ class _AnapencereViewState extends State<AnapencereView> {
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
           child: const Icon(Icons.add),
           onPressed: () {
-            dersModel.dersAd = '';
+            dersModel.dersAd = null;
             showDialog(
                 context: context,
                 builder: (context) {
@@ -139,17 +135,17 @@ class _AnapencereViewState extends State<AnapencereView> {
         children: [
           Expanded(
             child: TextButton.icon(
-                label: const Text('Düzenle'),
-                icon: const Icon(Icons.edit),
-                onPressed: () {} //=> Navigator.of(context).push(
-                // MaterialPageRoute(
-                // builder: (context) => DersDialog(
-                //   transaction: transaction,
-                //   onClickedDone: (id, dersad, sinifId) => editTransaction(transaction, id, dersad, sinifId),
-                // ),
-                //),
-                // ),
+              label: const Text('Düzenle'),
+              icon: const Icon(Icons.edit),
+              onPressed: () => Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (_) => DersDialog(
+                    transaction: transaction,
+                    onClickedDone: (id, dersad, sinifId) => editTransaction(context, transaction, id??0, dersad, sinifId),
+                  ),
                 ),
+              ),
+            ),
           ),
           Expanded(
             child: TextButton.icon(
@@ -166,10 +162,11 @@ class _AnapencereViewState extends State<AnapencereView> {
     context.read<DersCubit>().dersSil(id: dersModel.id!);
   }
 
-  editTransaction(DersModel dersModel, int id, String dersad, int sinifId) {
+  editTransaction(BuildContext context, DersModel dersModel, int id, String dersad, int sinifId) {
     dersModel.id = id;
     dersModel.dersAd = dersad;
     dersModel.sinifId = sinifId;
+    context.read<DersCubit>().dersKaydet(id: id, dersModel: dersModel);
     //dersModel.save();
   }
 }

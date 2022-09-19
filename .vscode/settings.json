@@ -2,5 +2,6 @@
     "sqltools.connections": [],
     "sqltools.useNodeRuntime": true,
     "cmake.configureOnOpen": true,
-    "markdown-todo.sortByCount": false
+    "markdown-todo.sortByCount": false,
+    "git.ignoreLimitWarning": true
 }

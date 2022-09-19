@@ -5,7 +5,7 @@ import 'package:temrinnotuygulamasiiki/core/widget/custom_menu_button.dart';
 class BuildAddButton extends StatelessWidget {
   final VoidCallback onPressed;
   final BuildContext context;
-  final int sonId;
+  final int? sonId;
   final bool isEditing;
 
   const BuildAddButton({

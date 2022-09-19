@@ -6,7 +6,7 @@ import 'package:temrinnotuygulamasiiki/features/ders/model/ders_model.dart';
 
 class DersDialog extends StatefulWidget {
   final DersModel? transaction;
-  final Function(int id, String dersad, int sinifId) onClickedDone;
+  final Function(int? id, String dersad, int sinifId) onClickedDone;
   //inal Function(DersModel) onClickedDone;
 
   const DersDialog({
@@ -49,8 +49,8 @@ class _DersDialogState extends State<DersDialog> {
     final isEditing = widget.transaction != null;
     final title = isEditing ? 'Dersi Düzenle' : 'Ders Ekle';
     //final box = DersBoxes.getTransactions();
-    int sonId;
-
+    int? sonId;
+    sonId = isEditing ? widget.transaction!.id : 0;
     /*if (widget.transaction?.id == null) {
       isEditing
           ? sonId = widget.transaction!.id
@@ -86,14 +86,14 @@ class _DersDialogState extends State<DersDialog> {
             const SizedBox(width: 10),
             BuildAddButton(
                 context: context,
-                sonId: -1,
+                sonId: sonId,
                 isEditing: isEditing,
                 onPressed: () async {
                   final isValid = formKey.currentState!.validate();
                   if (isValid) {
                     String? dersad = dersadController.text.toUpperCase();
                     //DersModel dersModel = DersModel();
-                    int id = -1;
+                    int? id = sonId;
                     //String dersAd = dersad;
                     int sinifId = -1;
                     widget.onClickedDone(id, dersad, sinifId);
@@ -132,8 +132,7 @@ class _DersDialogState extends State<DersDialog> {
           border: OutlineInputBorder(),
           hintText: 'Ders Adını Giriniz',
         ),
-        validator: (dersad) =>
-            dersad != null && dersad.isEmpty ? 'Ders Adını' : null,
+        validator: (dersad) => dersad != null && dersad.isEmpty ? 'Ders Adını' : null,
       );
 
   // List<String> buildItems() {
