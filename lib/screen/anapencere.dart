@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:temrinnotuygulamasiiki/features/ders/cubit/ders_cubit.dart';
 import 'package:temrinnotuygulamasiiki/features/ders/cubit/ders_state.dart';
+import 'package:temrinnotuygulamasiiki/features/ders/dialog/ders_dialog.dart';
 import 'package:temrinnotuygulamasiiki/features/ders/model/ders_model.dart';
 import 'package:temrinnotuygulamasiiki/features/ders/service/ders_database_provider.dart';
 import 'package:temrinnotuygulamasiiki/features/ders/widget/ders_card.dart';
@@ -18,10 +19,12 @@ class AnapencereView extends StatefulWidget {
 class _AnapencereViewState extends State<AnapencereView> {
   List<dynamic> ogrenciList = [];
   List<DersModel> durum = [];
+  //late final DersDatabaseProvider dersDatabaseProvider;
 
   @override
   void initState() {
     super.initState();
+    //dersDatabaseProvider = DersDatabaseProvider();
   }
 
   @override
@@ -33,43 +36,27 @@ class _AnapencereViewState extends State<AnapencereView> {
           appBar: AppBar(
             leading: state.isLoading ? const LoadingCenter() : const SizedBox(),
           ),
-          floatingActionButton: Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              FloatingActionButton(
-                child: const Icon(Icons.all_inbox),
-                onPressed: () async {
-                  // context.read<DersCubit>().dersleriGetir();
-                },
-              ),
-              FloatingActionButton(
-                child: const Icon(Icons.remove),
-                onPressed: () async {
-                  context.read<DersCubit>().dersSil(id: 3);
-                },
-              ),
-              FloatingActionButton(
-                child: const Icon(Icons.add),
-                onPressed: () async {
-                  DersModel dersModel = DersModel();
-                  dersModel.dersAd = "pc";
-                  dersModel.sinifId = 2;
-                  context.read<DersCubit>().dersKaydet(dersModel: dersModel);
-                },
-              ),
-              FloatingActionButton(
-                child: const Icon(Icons.list),
-                onPressed: () async {
-                  DersModel dersModel = DersModel();
-                  dersModel.dersAd = "web tasarım";
-                  dersModel.sinifId = 2;
-                  dersModel.id = 1;
-                  context.read<DersCubit>().dersKaydet(dersModel: dersModel);
-                  // context.read<DersCubit>().dersKaydet(id: 5, dersModel: dersModel);
-                },
-              ),
-            ],
-          ),
+          floatingActionButtonLocation:
+              FloatingActionButtonLocation.centerDocked,
+          //floatingActionButton: _buildFloatingActionButton(context),
+          floatingActionButton: FloatingActionButton(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8)),
+              child: const Icon(Icons.add),
+              onPressed: () {
+                DersModel dersModel = DersModel();
+                dersModel.dersAd = 'Deneme';
+                BlocProvider.of<DersCubit>(context)
+                    .dersKaydet(dersModel: dersModel);
+                // showDialog(
+                //     context: context,
+                //     builder: (context) {
+                //       return DersDialog(
+                //         onClickedDone: addTransaction,
+                //       );
+                //     });
+              }),
+
           body: BlocBuilder<DersCubit, DersState>(
             builder: (context, state) {
               // if (state is DersLoaded) {
@@ -108,6 +95,38 @@ class _AnapencereViewState extends State<AnapencereView> {
     );
   }
 
+  Future addTransaction(int id, String dersad, int sinifId) async {
+    //DersModel dersModel = DersModel(id: id, dersAd: dersad, sinifId: sinifId);
+    // _dersListesiHelper.addItem(dersModel);
+    //await dersDatabaseProvider.open();
+    DersModel dersModel = DersModel();
+    dersModel.dersAd = dersad;
+    dersModel.sinifId = 2;
+    dersModel.id = null;
+  }
+  // Widget _buildFloatingActionButton(BuildContext context) {
+  //   return Padding(
+  //     padding: const EdgeInsets.only(bottom: 24),
+  //     child: FloatingActionButton(
+  //         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+  //         child: const Icon(Icons.add),
+  //         onPressed: () {
+  //           DersModel dersModel = DersModel();
+  //           showDialog(
+  //               context: context,
+  //               builder: (context) {
+  //                 return DersDialog(
+  //                   onClickedDone: addTransaction,
+  //                 );
+  //               }).then((value) => print(value));
+
+  //           //context.read<DersCubit>().dersKaydet(dersModel: dersModel);
+  //         }),
+  //   );
+  // }
+
+//context.read<DersCubit>().dersKaydet(dersModel: dersModel);
+
   Widget buildButtons(BuildContext context, DersModel transaction) => Row(
         children: [
           Expanded(
@@ -135,7 +154,8 @@ class _AnapencereViewState extends State<AnapencereView> {
       );
 
   deleteTransaction(DersModel dersModel) {
-    //_dersListesiHelper.deleteItem(dersModel);
+    //BlocProvider.of<DersCubit>(context).dersSil(id: dersModel.id!);
+    context.read<DersCubit>().dersSil(id: dersModel.id!);
   }
 
   editTransaction(DersModel dersModel, int id, String dersad, int sinifId) {
@@ -145,6 +165,7 @@ class _AnapencereViewState extends State<AnapencereView> {
     //dersModel.save();
   }
 }
+
 
 // class PageView extends StatelessWidget {
 //   const PageView({Key? key}) : super(key: key);
@@ -227,4 +248,46 @@ Scaffold(
         ),
       ),
     );
+ */
+
+
+/*
+Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              FloatingActionButton(
+                child: const Icon(Icons.all_inbox),
+                onPressed: () async {
+                  // context.read<DersCubit>().dersleriGetir();
+                },
+              ),
+              FloatingActionButton(
+                child: const Icon(Icons.remove),
+                onPressed: () async {
+                  context.read<DersCubit>().dersSil(id: 3);
+                },
+              ),
+              FloatingActionButton(
+                child: const Icon(Icons.add),
+                onPressed: () async {
+                  DersModel dersModel = DersModel();
+                  dersModel.dersAd = "pc";
+                  dersModel.sinifId = 2;
+                  context.read<DersCubit>().dersKaydet(dersModel: dersModel);
+                },
+              ),
+              FloatingActionButton(
+                child: const Icon(Icons.list),
+                onPressed: () async {
+                  DersModel dersModel = DersModel();
+                  dersModel.dersAd = "web tasarım";
+                  dersModel.sinifId = 2;
+                  dersModel.id = 1;
+                  context.read<DersCubit>().dersKaydet(dersModel: dersModel);
+                  // context.read<DersCubit>().dersKaydet(id: 5, dersModel: dersModel);
+                },
+              ),
+            ],
+          ),
+
  */
