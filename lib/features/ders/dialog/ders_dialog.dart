@@ -6,7 +6,6 @@ import 'package:temrinnotuygulamasiiki/features/ders/model/ders_model.dart';
 
 class DersDialog extends StatefulWidget {
   final DersModel? transaction;
-
   final Function(int id, String dersad, int sinifId) onClickedDone;
   //inal Function(DersModel) onClickedDone;
 
@@ -98,7 +97,7 @@ class _DersDialogState extends State<DersDialog> {
                     //String dersAd = dersad;
                     int sinifId = -1;
                     widget.onClickedDone(id, dersad, sinifId);
-                    Navigator.of(context).pop();
+                    Navigator.of(context).pop(); //todo: navigator pop return value
                   }
                 }),
           ],

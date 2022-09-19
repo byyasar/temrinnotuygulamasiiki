@@ -20,6 +20,7 @@ class _AnapencereViewState extends State<AnapencereView> {
   List<dynamic> ogrenciList = [];
   List<DersModel> durum = [];
   //late final DersDatabaseProvider dersDatabaseProvider;
+  DersModel dersModel = DersModel();
 
   @override
   void initState() {
@@ -38,24 +39,23 @@ class _AnapencereViewState extends State<AnapencereView> {
           ),
           floatingActionButtonLocation:
               FloatingActionButtonLocation.centerDocked,
-          //floatingActionButton: _buildFloatingActionButton(context),
-          floatingActionButton: FloatingActionButton(
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8)),
-              child: const Icon(Icons.add),
-              onPressed: () {
-                DersModel dersModel = DersModel();
-                dersModel.dersAd = 'Deneme';
-                BlocProvider.of<DersCubit>(context)
-                    .dersKaydet(dersModel: dersModel);
-                // showDialog(
-                //     context: context,
-                //     builder: (context) {
-                //       return DersDialog(
-                //         onClickedDone: addTransaction,
-                //       );
-                //     });
-              }),
+          floatingActionButton: _buildFloatingActionButton(context),
+          // floatingActionButton: FloatingActionButton(
+          //     shape: RoundedRectangleBorder(
+          //         borderRadius: BorderRadius.circular(8)),
+          //     child: const Icon(Icons.add),
+          //     onPressed: () {
+          //       showDialog(
+          //           context: context,
+          //           builder: (context) {
+          //             return DersDialog(
+          //               onClickedDone: addTransaction,
+          //             );
+          //           });
+          //       DersModel dersModel = DersModel();
+          //       dersModel.dersAd = 'Deneme';
+          //       context.read<DersCubit>().dersKaydet(dersModel: dersModel);
+          //     }),
 
           body: BlocBuilder<DersCubit, DersState>(
             builder: (context, state) {
@@ -95,35 +95,43 @@ class _AnapencereViewState extends State<AnapencereView> {
     );
   }
 
-  Future addTransaction(int id, String dersad, int sinifId) async {
+  Future addTransaction(int id, String? dersad, int sinifId) async {
     //DersModel dersModel = DersModel(id: id, dersAd: dersad, sinifId: sinifId);
     // _dersListesiHelper.addItem(dersModel);
     //await dersDatabaseProvider.open();
-    DersModel dersModel = DersModel();
-    dersModel.dersAd = dersad;
+    dersModel.dersAd = dersad??"";
     dersModel.sinifId = 2;
     dersModel.id = null;
+    //context.read<DersCubit>().dersKaydet(dersModel: dersModel);
   }
-  // Widget _buildFloatingActionButton(BuildContext context) {
-  //   return Padding(
-  //     padding: const EdgeInsets.only(bottom: 24),
-  //     child: FloatingActionButton(
-  //         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-  //         child: const Icon(Icons.add),
-  //         onPressed: () {
-  //           DersModel dersModel = DersModel();
-  //           showDialog(
-  //               context: context,
-  //               builder: (context) {
-  //                 return DersDialog(
-  //                   onClickedDone: addTransaction,
-  //                 );
-  //               }).then((value) => print(value));
 
-  //           //context.read<DersCubit>().dersKaydet(dersModel: dersModel);
-  //         }),
-  //   );
-  // }
+  Widget _buildFloatingActionButton(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 24),
+      child: FloatingActionButton(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          child: const Icon(Icons.add),
+          onPressed: () {
+            dersModel.dersAd = '';
+            showDialog(
+                context: context,
+                builder: (context) {
+                  return DersDialog(
+                    onClickedDone: addTransaction,
+                  );
+                }).then((value) {
+              if (dersModel.dersAd != null) {
+                context.read<DersCubit>().dersKaydet(dersModel: dersModel);
+              }
+            });
+
+            /* DersModel dersModel = DersModel();
+            dersModel.dersAd = 'aaa';
+            dersModel.sinifId = 2;
+            context.read<DersCubit>().dersKaydet(dersModel: dersModel); */
+          }),
+    );
+  }
 
 //context.read<DersCubit>().dersKaydet(dersModel: dersModel);
 
@@ -147,13 +155,13 @@ class _AnapencereViewState extends State<AnapencereView> {
             child: TextButton.icon(
               label: const Text('Sil'),
               icon: const Icon(Icons.delete),
-              onPressed: () => deleteTransaction(transaction),
+              onPressed: () => deleteTransaction(context, transaction),
             ),
           )
         ],
       );
 
-  deleteTransaction(DersModel dersModel) {
+  deleteTransaction(BuildContext context, DersModel dersModel) {
     //BlocProvider.of<DersCubit>(context).dersSil(id: dersModel.id!);
     context.read<DersCubit>().dersSil(id: dersModel.id!);
   }
