@@ -42,7 +42,8 @@ class _DersPageViewState extends State<DersPageView> {
             state.isLoading ? const LoadingCenter() : const Text('Dersler'),
           ),
 
-          floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+          floatingActionButtonLocation:
+              FloatingActionButtonLocation.centerDocked,
           floatingActionButton: _buildFloatingActionButton(context),
           // floatingActionButton: FloatingActionButton(
           //     shape: RoundedRectangleBorder(
@@ -83,7 +84,10 @@ class _DersPageViewState extends State<DersPageView> {
                   itemCount: list.length,
                   itemBuilder: (BuildContext context, int index) {
                     //Text(list[index].toString());
-                    return DersCard(transaction: list[index], index: index, butons: buildButtons(context, list[index]));
+                    return DersCard(
+                        transaction: list[index],
+                        index: index,
+                        butons: buildButtons(context, list[index]));
                   },
                 );
               } else {
@@ -101,7 +105,7 @@ class _DersPageViewState extends State<DersPageView> {
     // _dersListesiHelper.addItem(dersModel);
     //await dersDatabaseProvider.open();
     dersModel.dersAd = dersad ?? "";
-    dersModel.sinifId = 2;
+    dersModel.sinifId = sinifId;
     dersModel.id = null;
     //context.read<DersCubit>().dersKaydet(dersModel: dersModel);
   }
@@ -146,8 +150,8 @@ class _DersPageViewState extends State<DersPageView> {
                 MaterialPageRoute(
                   builder: (_) => DersDialog(
                     transaction: transaction,
-                    onClickedDone: (id, dersad, sinifId) =>
-                        editTransaction(context, transaction, id ?? 0, dersad, sinifId),
+                    onClickedDone: (id, dersad, sinifId) => editTransaction(
+                        context, transaction, id ?? 0, dersad, sinifId),
                   ),
                 ),
               ),
@@ -167,7 +171,8 @@ class _DersPageViewState extends State<DersPageView> {
     context.read<DersCubit>().dersSil(id: dersModel.id!);
   }
 
-  editTransaction(BuildContext context, DersModel dersModel, int id, String dersad, int sinifId) {
+  editTransaction(BuildContext context, DersModel dersModel, int id,
+      String dersad, int sinifId) {
     dersModel.id = id;
     dersModel.dersAd = dersad;
     dersModel.sinifId = sinifId;

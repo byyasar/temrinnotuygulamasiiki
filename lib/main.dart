@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:temrinnotuygulamasiiki/screen/ders_page_view.dart';
 import 'screen/sinif_page_view.dart';
 
 Future<void> main() async {
@@ -23,7 +24,7 @@ class MyApp extends StatelessWidget {
         //backgroundColor: Colors.transparent,
         elevation: 0,
       )),
-      home: const SinifPageView(),
+      home: const DersPageView(),
     );
   }
 }
