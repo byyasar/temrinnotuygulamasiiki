@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:temrinnotuygulamasiiki/features/theme/light_theme.dart';
 import 'package:temrinnotuygulamasiiki/screen/ders_page_view.dart';
-import 'screen/sinif_page_view.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -17,13 +16,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Material App',
-      theme: ThemeData.dark().copyWith(
-          appBarTheme: const AppBarTheme(
-        centerTitle: true,
-        systemOverlayStyle: SystemUiOverlayStyle.light,
-        //backgroundColor: Colors.transparent,
-        elevation: 0,
-      )),
+      theme: LighTheme().theme,
       home: const DersPageView(),
     );
   }
