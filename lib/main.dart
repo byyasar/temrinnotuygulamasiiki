@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:temrinnotuygulamasiiki/features/theme/light_theme.dart';
-import 'package:temrinnotuygulamasiiki/screen/ders_page_view.dart';
+import 'package:temrinnotuygulamasiiki/screen/ogrenci_page_view.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -15,9 +15,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Material App',
+      title: 'Temrin Not Sistemi App',
       theme: LighTheme().theme,
-      home: const DersPageView(),
+      home: const OgrenciPageView(),
     );
   }
 }

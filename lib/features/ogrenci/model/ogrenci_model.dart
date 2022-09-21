@@ -10,15 +10,25 @@ class OgrenciModel extends DatabaseModel<OgrenciModel> {
   int? sinifId;
   String? ogrenciResim;
 
-  OgrenciModel({this.id, this.ogrenciAdSoyad, this.ogrenciNu, this.sinifId, this.ogrenciResim});
+  OgrenciModel(
+      {this.id,
+      this.ogrenciAdSoyad,
+      this.ogrenciNu,
+      this.sinifId,
+      this.ogrenciResim});
 
   @override
-  OgrenciModel fromJson(Map<String, Object> json) {
+  OgrenciModel fromJson(Map<String, Object?> json) {
     return _$OgrenciModelFromJson(json);
   }
 
   @override
-  Map<String, Object?> toJson() {
+  Map<String, dynamic> toJson() {
     return _$OgrenciModelToJson(this);
+  }
+
+  @override
+  String toString() {
+    return '$id- $ogrenciAdSoyad-$ogrenciNu-$sinifId';
   }
 }

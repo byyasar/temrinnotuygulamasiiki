@@ -100,7 +100,7 @@ class _DersPageViewState extends State<DersPageView> {
     );
   }
 
-  Future addTransaction(int? id, String? dersad, int sinifId) async {
+  Future addTransaction(int? id, String? dersad, int? sinifId) async {
     //DersModel dersModel = DersModel(id: id, dersAd: dersad, sinifId: sinifId);
     // _dersListesiHelper.addItem(dersModel);
     //await dersDatabaseProvider.open();
@@ -151,7 +151,7 @@ class _DersPageViewState extends State<DersPageView> {
                   builder: (_) => DersDialog(
                     transaction: transaction,
                     onClickedDone: (id, dersad, sinifId) => editTransaction(
-                        context, transaction, id ?? 0, dersad, sinifId),
+                        context, transaction, id ?? 0, dersad, sinifId ?? -1),
                   ),
                 ),
               ),

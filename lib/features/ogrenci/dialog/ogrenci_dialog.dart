@@ -1,51 +1,51 @@
-import 'package:flutter/material.dart';
 import 'package:dropdown_search/dropdown_search.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:temrinnotuygulamasiiki/core/widget/add_button.dart';
 import 'package:temrinnotuygulamasiiki/core/widget/cancel_button.dart';
-import 'package:temrinnotuygulamasiiki/features/ders/model/ders_model.dart';
+import 'package:temrinnotuygulamasiiki/features/ogrenci/model/ogrenci_model.dart';
 import 'package:temrinnotuygulamasiiki/features/sinif/cubit/sinif_cubit.dart';
 import 'package:temrinnotuygulamasiiki/features/sinif/cubit/sinif_state.dart';
 import 'package:temrinnotuygulamasiiki/features/sinif/model/sinif_model.dart';
 import 'package:temrinnotuygulamasiiki/features/sinif/service/sinif_database_provider.dart';
 
-class DersDialog extends StatefulWidget {
-  final DersModel? transaction;
-  final Function(int? id, String dersad, int? sinifId) onClickedDone;
-  //inal Function(DersModel) onClickedDone;
+class OgrenciDialog extends StatefulWidget {
+  final OgrenciModel? transaction;
 
-  const DersDialog({
+  final Function(int? id, String ogrenciAdSoyad, int? ogrenciNu, int? sinifId,
+      String? ogrenciResim) onClickedDone;
+
+  const OgrenciDialog({
     Key? key,
     this.transaction,
     required this.onClickedDone,
   }) : super(key: key);
 
   @override
-  _DersDialogState createState() => _DersDialogState();
+  _OgrenciDialogState createState() => _OgrenciDialogState();
 }
 
-class _DersDialogState extends State<DersDialog> {
+class _OgrenciDialogState extends State<OgrenciDialog> {
   final formKey = GlobalKey<FormState>();
-  final dersadController = TextEditingController();
+  final ogrenciadController = TextEditingController();
+  final nuController = TextEditingController();
   int? sinifId;
-  // SinifStore sinifStore = SinifStore();
-  List<SinifModel> transactionsSinif = [];
+
   @override
   void initState() {
     super.initState();
 
     if (widget.transaction != null) {
       final transaction = widget.transaction!;
-      dersadController.text = transaction.dersAd ?? "";
+      ogrenciadController.text = transaction.ogrenciAdSoyad ?? "";
+      nuController.text = transaction.ogrenciNu.toString();
     }
-    // if (transactionsSinif.isEmpty) {
-    //   sinifListesiniDoldur();
-    // }
   }
 
   @override
   void dispose() {
-    dersadController.dispose();
+    ogrenciadController.dispose();
+    nuController.dispose();
     super.dispose();
   }
 
@@ -54,10 +54,10 @@ class _DersDialogState extends State<DersDialog> {
     List<SinifModel> tSinif = [];
 
     final isEditing = widget.transaction != null;
-    final title = isEditing ? 'Dersi Düzenle' : 'Ders Ekle';
+    final title = isEditing ? 'Öğrenciyi Düzenle' : 'Öğrenci Ekle';
     int? sonId;
+    isEditing ? sonId = widget.transaction!.id : 0;
     isEditing ? sinifId = widget.transaction!.sinifId : -1;
-    sonId = isEditing ? widget.transaction!.id : 0;
 
     return BlocProvider(
       create: (context) {
@@ -66,15 +66,23 @@ class _DersDialogState extends State<DersDialog> {
       child: BlocBuilder<SinifCubit, SinifState>(
         builder: (context, state) {
           if (state.isCompleted) {
-            //print(state.sinifModel);
             tSinif = state.sinifModel ?? [];
-            String selectedItem = "";
+             String selectedItem = "";
             if (isEditing) {
+             
               selectedItem = widget.transaction!.sinifId.toString();
               SinifModel? sItem = tSinif.firstWhere(
                   (element) => element.id == int.tryParse(selectedItem));
               selectedItem = sItem.sinifAd ?? "";
             }
+
+            /* final index = tSinif.indexWhere((element) =>
+        element.id == int.tryParse(selectedItem??"0"));
+  if (index >= 0) {
+    print('Using indexWhere: ${tSinif[index]}');
+     selectedItem = tSinif[index].sinifAd??"";
+  }
+ */
             return AlertDialog(
               title: Text(title),
               content: Form(
@@ -84,7 +92,9 @@ class _DersDialogState extends State<DersDialog> {
                     mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
                       const SizedBox(height: 8),
-                      builddersad(),
+                      buildOgrenciad(),
+                      const SizedBox(height: 8),
+                      buildNu(),
                       const SizedBox(height: 8),
                       buildSinif(context, tSinif, selectedItem)
                     ],
@@ -98,23 +108,28 @@ class _DersDialogState extends State<DersDialog> {
                     buildCancelButton(context),
                     const SizedBox(width: 10),
                     BuildAddButton(
-                        context: context,
-                        sonId: sonId,
-                        isEditing: isEditing,
-                        onPressed: () async {
-                          final isValid = formKey.currentState!.validate();
-                          if (isValid) {
-                            String? dersad =
-                                dersadController.text.toUpperCase();
-                            //DersModel dersModel = DersModel();
-                            int? id = sonId;
-                            //String dersAd = dersad;
-                           
-                            widget.onClickedDone(id, dersad, sinifId);
-                            Navigator.of(context)
-                                .pop(); //todo: navigator pop return value
-                          }
-                        }),
+                      context: context,
+                      sonId: sonId,
+                      isEditing: isEditing,
+                      onPressed: () async {
+                        final isValid = formKey.currentState!.validate();
+
+                        if (isValid) {
+                          String? ogrenciAdSoyad =
+                              ogrenciadController.text.toUpperCase();
+                          // int? nu = int.parse(nuController.text);
+                          int? id = sonId;
+                          //int? sinifID = sinifId;
+                          int? ogrenciNu = int.parse(nuController.text);
+                          String? ogrenciResim = "";
+
+
+                          widget.onClickedDone(id, ogrenciAdSoyad, ogrenciNu,
+                              sinifId, ogrenciResim);
+                          Navigator.of(context).pop();
+                        }
+                      },
+                    ),
                   ],
                 ),
               ],
@@ -143,10 +158,9 @@ class _DersDialogState extends State<DersDialog> {
                     .singleWhere((element) => element.sinifAd == value)
                     .id ??
                 -1;
-            sinifId = _sinifid;
-            // setState(() {
-            //   sinifId = _sinifid;
-            // });
+           
+              sinifId = _sinifid;
+            
             // sinifStore.setSinifId(sinifid);
             //print('storedan glen id' + sinifid.toString());
           },
@@ -154,21 +168,29 @@ class _DersDialogState extends State<DersDialog> {
         ),
       );
 
-  Widget builddersad() => TextFormField(
-        controller: dersadController,
+  Widget buildOgrenciad() => TextFormField(
+        controller: ogrenciadController,
         decoration: const InputDecoration(
           border: OutlineInputBorder(),
-          hintText: 'Ders Adını Giriniz',
+          hintText: 'Öğrenci Adını Giriniz',
         ),
-        validator: (dersad) =>
-            dersad != null && dersad.isEmpty ? 'Ders Adını' : null,
+        validator: (ogrenciAd) => ogrenciAd != null && ogrenciAd.isEmpty
+            ? 'Öğrenci Adını Yazınız'
+            : null,
+      );
+
+  Widget buildNu() => TextFormField(
+        decoration: const InputDecoration(
+          border: OutlineInputBorder(),
+          label: Text("Öğrenci Nu"),
+          hintText: 'Numarayı Giriniz',
+        ),
+        keyboardType: TextInputType.number,
+        validator: (name) => name != null && name.isEmpty ? 'Nu' : null,
+        controller: nuController,
       );
 
   List<String> buildItems(List<SinifModel> sinifModel) {
-    // List<String> items = SinifBoxes.getTransactions()
-    //     .values
-    //     .map((e) => e.sinifAd.toString())
-    //     .toList();
     final items = sinifModel.map((e) => e.sinifAd.toString()).toList();
     print(items);
     return items;
