@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:temrinnotuygulamasiiki/features/ders/cubit/ders_cubit.dart';
+import 'package:temrinnotuygulamasiiki/features/ders/cubit/ders_state.dart';
+import 'package:temrinnotuygulamasiiki/features/ders/model/ders_model.dart';
+import 'package:temrinnotuygulamasiiki/features/ders/service/ders_database_provider.dart';
 import 'package:temrinnotuygulamasiiki/features/temrin/dialog/temrin_dialog.dart';
 import 'package:temrinnotuygulamasiiki/widget/build_drawer.dart';
 import 'package:temrinnotuygulamasiiki/core/widget/custom_appbar.dart';
@@ -18,8 +22,8 @@ class TemrinPageView extends StatefulWidget {
 }
 
 class _TemrinPageViewState extends State<TemrinPageView> {
-  List<dynamic> ogrenciList = [];
   List<TemrinModel> durum = [];
+  List<DersModel> dersList = [];
   //late final TemrinDatabaseProvider temrinDatabaseProvider;
   TemrinModel temrinModel = TemrinModel();
 
@@ -31,8 +35,17 @@ class _TemrinPageViewState extends State<TemrinPageView> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => TemrinCubit(databaseProvider: TemrinDatabaseProvider()),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) =>
+              TemrinCubit(databaseProvider: TemrinDatabaseProvider()),
+        ),
+        BlocProvider(
+          create: (context) =>
+              DersCubit(databaseProvider: DersDatabaseProvider()),
+        ),
+      ],
       child: BlocBuilder<TemrinCubit, TemrinState>(builder: (context, state) {
         return Scaffold(
           //appBar: customAppBar(context, 'Database İşlemleri'),
@@ -48,30 +61,24 @@ class _TemrinPageViewState extends State<TemrinPageView> {
 
           body: BlocBuilder<TemrinCubit, TemrinState>(
             builder: (context, state) {
-              // if (state is TemrinLoaded) {
-              //   List<TemrinModel> list = [];
-              //   list = state.temrin ?? [];
-              //   return ListView.builder(
-              //     itemCount: list.length,
-              //     itemBuilder: (BuildContext context, int index) {
-              //       return Text(list[index].toString());
-              //     },
-              //   );
-              // } else if (state is TemrinLoading) {
-              //   return const Center(child: CircularProgressIndicator());
-              // } else if (state is TemrinFailure) {
-              //   return Text('$state hata oluştu');
               if (state.isCompleted) {
                 List<TemrinModel> list = [];
+
                 list = state.temrinModel ?? [];
                 return ListView.builder(
                   itemCount: list.length,
                   itemBuilder: (BuildContext context, int index) {
                     //Text(list[index].toString());
-                    return TemrinCard(
-                        transaction: list[index],
-                        index: index,
-                        butons: buildButtons(context, list[index]));
+                    return BlocBuilder<DersCubit, DersState>(
+                      builder: (context, state) {
+                        if(state.isCompleted)final dlist=context.read<DersCubit>().dersleriGetir();
+                        return TemrinCard(
+                          dersList: state.dersModel,
+                            transaction: list[index],
+                            index: index,
+                            butons: buildButtons(context, list[index]));
+                      },
+                    );
                   },
                 );
               } else {
@@ -110,7 +117,9 @@ class _TemrinPageViewState extends State<TemrinPageView> {
                   );
                 }).then((value) {
               if (temrinModel.temrinKonusu != null) {
-                context.read<TemrinCubit>().temrinKaydet(temrinModel: temrinModel);
+                context
+                    .read<TemrinCubit>()
+                    .temrinKaydet(temrinModel: temrinModel);
               }
             });
 
