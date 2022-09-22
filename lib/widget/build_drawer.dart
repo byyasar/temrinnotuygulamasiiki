@@ -6,6 +6,7 @@ import 'package:temrinnotuygulamasiiki/constans/icon_constans.dart';
 import 'package:temrinnotuygulamasiiki/screen/ders_page_view.dart';
 import 'package:temrinnotuygulamasiiki/screen/ogrenci_page_view.dart';
 import 'package:temrinnotuygulamasiiki/screen/sinif_page_view.dart';
+import 'package:temrinnotuygulamasiiki/screen/temrin_page_view.dart';
 
 Drawer buildDrawer(BuildContext context) {
   return Drawer(
@@ -76,7 +77,7 @@ Drawer buildDrawer(BuildContext context) {
             ],
           ),
           onTap: () {
-            //Navigator.of(context).push(MaterialPageRoute(builder: (context) => const TemrinpageView()));
+            Navigator.of(context).push(MaterialPageRoute(builder: (context) => const TemrinPageView()));
           },
         ),
         const Divider(color: Colors.black, height: 2.0),

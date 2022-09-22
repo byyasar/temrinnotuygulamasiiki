@@ -1,33 +1,26 @@
 import 'package:equatable/equatable.dart';
-import 'package:temrinnotuygulamasiiki/features/ders/model/ders_model.dart';
+import 'package:temrinnotuygulamasiiki/features/temrin/model/temrin_model.dart';
 
-class DersState extends Equatable {
+
+class TemrinState extends Equatable {
   final bool isLoading;
-  final List<DersModel>? dersModel;
-  final DersModel? dersModeli;
+  final List<TemrinModel>?  temrinModel;
   final bool isCompleted;
-
-  const DersState({
-    this.dersModel,
-    this.dersModeli,
-    this.isLoading = false,
-    this.isCompleted = false,
-  });
+  const TemrinState({this.temrinModel, this.isLoading=false,this.isCompleted=false});
 
   @override
-  List<Object?> get props => [isLoading, dersModel, dersModeli];
+  List<Object?> get props => [isLoading,temrinModel];
 
-  DersState copyWith({
+    TemrinState copyWith({
     bool? isLoading,
-    List<DersModel>? dersModel,
-    DersModel? dersModeli,
+   List<TemrinModel>? temrinModel,
     bool? isCompleted,
   }) {
-    return DersState(
-        isLoading: isLoading ?? false,
-        dersModel: dersModel ?? this.dersModel,
-        isCompleted: isCompleted ?? false,
-        dersModeli: dersModeli ?? this.dersModeli);
+    return TemrinState(
+      isLoading: isLoading??false,
+      temrinModel: temrinModel ?? this.temrinModel,
+      isCompleted: isCompleted??false,
+    );
   }
 }
 

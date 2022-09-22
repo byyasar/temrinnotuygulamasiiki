@@ -12,12 +12,12 @@ class TemrinModel extends DatabaseModel<TemrinModel> {
   TemrinModel({this.id,this.temrinKonusu,this.dersId});
 
   @override
-  TemrinModel fromJson(Map<String, Object> json) {
+  TemrinModel fromJson(Map<String, Object?> json) {
     return _$TemrinModelFromJson(json);
   }
 
   @override
-  Map<String, Object?> toJson() {
+  Map<String, dynamic> toJson() {
     return _$TemrinModelToJson(this);
   }
 }
