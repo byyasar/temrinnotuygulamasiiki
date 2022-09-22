@@ -23,7 +23,7 @@ class TemrinPageView extends StatefulWidget {
 
 class _TemrinPageViewState extends State<TemrinPageView> {
   List<TemrinModel> durum = [];
-  List<DersModel> dersList = [];
+  List<DersModel>? dersList = [];
   //late final TemrinDatabaseProvider temrinDatabaseProvider;
   TemrinModel temrinModel = TemrinModel();
 
@@ -31,7 +31,11 @@ class _TemrinPageViewState extends State<TemrinPageView> {
   void initState() {
     super.initState();
     //temrinDatabaseProvider = TemrinDatabaseProvider();
+    dersListesiGetir;
   }
+
+  Future<void> get dersListesiGetir async =>
+      dersList = await DersDatabaseProvider().getList();
 
   @override
   Widget build(BuildContext context) {
@@ -41,18 +45,20 @@ class _TemrinPageViewState extends State<TemrinPageView> {
           create: (context) =>
               TemrinCubit(databaseProvider: TemrinDatabaseProvider()),
         ),
-        BlocProvider(
+        /*  BlocProvider(
           create: (context) =>
               DersCubit(databaseProvider: DersDatabaseProvider()),
-        ),
+        ), */
       ],
       child: BlocBuilder<TemrinCubit, TemrinState>(builder: (context, state) {
         return Scaffold(
           //appBar: customAppBar(context, 'Database İşlemleri'),
           drawer: buildDrawer(context),
           appBar: customAppBar(
-            context,
-            state.isLoading ? const LoadingCenter() : const Text('Temrinler'),
+            context: context,
+            title: state.isLoading
+                ? const LoadingCenter()
+                : const Text('Temrinler'),
           ),
 
           floatingActionButtonLocation:
@@ -69,16 +75,12 @@ class _TemrinPageViewState extends State<TemrinPageView> {
                   itemCount: list.length,
                   itemBuilder: (BuildContext context, int index) {
                     //Text(list[index].toString());
-                    return BlocBuilder<DersCubit, DersState>(
-                      builder: (context, state) {
-                        if(state.isCompleted)final dlist=context.read<DersCubit>().dersleriGetir();
-                        return TemrinCard(
-                          dersList: state.dersModel,
-                            transaction: list[index],
-                            index: index,
-                            butons: buildButtons(context, list[index]));
-                      },
-                    );
+
+                    return TemrinCard(
+                        dersList: dersList,
+                        transaction: list[index],
+                        index: index,
+                        butons: buildButtons(context, list[index]));
                   },
                 );
               } else {

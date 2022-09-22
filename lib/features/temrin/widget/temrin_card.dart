@@ -34,9 +34,8 @@ class TemrinCard extends StatelessWidget {
   }
 
   String? dersAdiniGetir(int? id) {
-    if (dersList != null) {
-      print('object');
-      return dersList!.firstWhere((element) => element.id == id).dersAd ?? "a";
+    if (dersList!.isNotEmpty) {
+      return dersList!.firstWhere((element) => element.id == id).dersAd ?? "";
     }
   }
 }

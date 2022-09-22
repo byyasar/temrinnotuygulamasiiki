@@ -29,8 +29,8 @@ class _OgrenciPageViewState extends State<OgrenciPageView> {
         return Scaffold(
           drawer: buildDrawer(context),
           appBar: customAppBar(
-              context,
-              state.isLoading
+              context:context,
+              title:state.isLoading
                   ? const LoadingCenter()
                   : const Text('TNS-Öğrenci Listesi')),
           body: _buildBody,

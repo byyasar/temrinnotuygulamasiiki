@@ -85,7 +85,8 @@ class _DersDialogState extends State<DersDialog> {
                     children: <Widget>[
                       const SizedBox(height: 8),
                       builddersad(),
-                      const SizedBox(height: 8),
+                      const SizedBox(height: 1),
+                      const Text('Sınıf Seçiniz'),
                       buildSinif(context, tSinif, selectedItem)
                     ],
                   ),
@@ -109,7 +110,7 @@ class _DersDialogState extends State<DersDialog> {
                             //DersModel dersModel = DersModel();
                             int? id = sonId;
                             //String dersAd = dersad;
-                           
+
                             widget.onClickedDone(id, dersad, sinifId);
                             Navigator.of(context)
                                 .pop(); //todo: navigator pop return value
@@ -165,12 +166,7 @@ class _DersDialogState extends State<DersDialog> {
       );
 
   List<String> buildItems(List<SinifModel> sinifModel) {
-    // List<String> items = SinifBoxes.getTransactions()
-    //     .values
-    //     .map((e) => e.sinifAd.toString())
-    //     .toList();
     final items = sinifModel.map((e) => e.sinifAd.toString()).toList();
-    print(items);
     return items;
   }
 }

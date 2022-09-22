@@ -17,9 +17,12 @@ class DersPageView extends StatefulWidget {
   State<DersPageView> createState() => _DersPageViewState();
 }
 
+//TODO: Dersler view e sınıfadları getirilecek;
+
 class _DersPageViewState extends State<DersPageView> {
   List<dynamic> ogrenciList = [];
   List<DersModel> durum = [];
+  List<DersModel> dlist = [];
   //late final DersDatabaseProvider dersDatabaseProvider;
   DersModel dersModel = DersModel();
 
@@ -35,33 +38,28 @@ class _DersPageViewState extends State<DersPageView> {
       create: (context) => DersCubit(databaseProvider: DersDatabaseProvider()),
       child: BlocBuilder<DersCubit, DersState>(builder: (context, state) {
         return Scaffold(
-          //appBar: customAppBar(context, 'Database İşlemleri'),
           drawer: buildDrawer(context),
           appBar: customAppBar(
-            context,
-            state.isLoading ? const LoadingCenter() : const Text('Dersler'),
+            search: PopupMenuButton<String>(
+              //onCanceled: () => _viewDersModel.setFiltreDersId(-1),
+              onSelected: (value) {
+                print(value);
+                //_viewDersModel.setFiltreDersId(int.parse(value));
+              },
+              itemBuilder: (BuildContext context) {
+                return dlist.map((e) {
+                  return PopupMenuItem(
+                      value: e.id.toString(), child: Text(e.dersAd.toString()));
+                }).toList();
+              },
+            ),
+            context: context,
+            title:
+                state.isLoading ? const LoadingCenter() : const Text('Dersler'),
           ),
-
           floatingActionButtonLocation:
               FloatingActionButtonLocation.centerDocked,
           floatingActionButton: _buildFloatingActionButton(context),
-          // floatingActionButton: FloatingActionButton(
-          //     shape: RoundedRectangleBorder(
-          //         borderRadius: BorderRadius.circular(8)),
-          //     child: const Icon(Icons.add),
-          //     onPressed: () {
-          //       showDialog(
-          //           context: context,
-          //           builder: (context) {
-          //             return DersDialog(
-          //               onClickedDone: addTransaction,
-          //             );
-          //           });
-          //       DersModel dersModel = DersModel();
-          //       dersModel.dersAd = 'Deneme';
-          //       context.read<DersCubit>().dersKaydet(dersModel: dersModel);
-          //     }),
-
           body: BlocBuilder<DersCubit, DersState>(
             builder: (context, state) {
               // if (state is DersLoaded) {
@@ -78,16 +76,15 @@ class _DersPageViewState extends State<DersPageView> {
               // } else if (state is DersFailure) {
               //   return Text('$state hata oluştu');
               if (state.isCompleted) {
-                List<DersModel> list = [];
-                list = state.dersModel ?? [];
+                dlist = state.dersModel ?? [];
                 return ListView.builder(
-                  itemCount: list.length,
+                  itemCount: dlist.length,
                   itemBuilder: (BuildContext context, int index) {
                     //Text(list[index].toString());
                     return DersCard(
-                        transaction: list[index],
+                        transaction: dlist[index],
                         index: index,
-                        butons: buildButtons(context, list[index]));
+                        butons: buildButtons(context, dlist[index]));
                   },
                 );
               } else {

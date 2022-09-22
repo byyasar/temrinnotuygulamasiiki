@@ -27,7 +27,7 @@ class _SinifPageViewState extends State<SinifPageView> {
       child: BlocBuilder<SinifCubit, SinifState>(builder: (context, state) {
         return Scaffold(
           drawer: buildDrawer(context),
-          appBar: customAppBar(context, state.isLoading ? const LoadingCenter() : const Text('TNS-Sınıf Listesi')),
+          appBar: customAppBar(context:context,title: state.isLoading ? const LoadingCenter() : const Text('TNS-Sınıf Listesi')),
           body: _buildBody,
           floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
           floatingActionButton: _buildFloatingAcionButton(context),
