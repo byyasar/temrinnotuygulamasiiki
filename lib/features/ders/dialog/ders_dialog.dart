@@ -69,7 +69,7 @@ class _DersDialogState extends State<DersDialog> {
             //print(state.sinifModel);
             tSinif = state.sinifModel ?? [];
             String selectedItem = "";
-            if (isEditing) {
+            if (isEditing&&selectedItem.isNotEmpty) {
               selectedItem = widget.transaction!.sinifId.toString();
               SinifModel? sItem = tSinif.firstWhere(
                   (element) => element.id == int.tryParse(selectedItem));

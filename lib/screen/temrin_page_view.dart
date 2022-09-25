@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:temrinnotuygulamasiiki/features/ders/cubit/ders_cubit.dart';
-import 'package:temrinnotuygulamasiiki/features/ders/cubit/ders_state.dart';
 import 'package:temrinnotuygulamasiiki/features/ders/model/ders_model.dart';
 import 'package:temrinnotuygulamasiiki/features/ders/service/ders_database_provider.dart';
 import 'package:temrinnotuygulamasiiki/features/temrin/dialog/temrin_dialog.dart';
@@ -24,7 +22,6 @@ class TemrinPageView extends StatefulWidget {
 class _TemrinPageViewState extends State<TemrinPageView> {
   List<TemrinModel> durum = [];
   List<DersModel>? dersList = [];
-  //late final TemrinDatabaseProvider temrinDatabaseProvider;
   TemrinModel temrinModel = TemrinModel();
 
   @override

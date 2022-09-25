@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:temrinnotuygulamasiiki/features/sinif/model/sinif_model.dart';
+import 'package:temrinnotuygulamasiiki/features/sinif/service/sinif_database_provider.dart';
 import 'package:temrinnotuygulamasiiki/widget/build_drawer.dart';
 import 'package:temrinnotuygulamasiiki/core/widget/custom_appbar.dart';
 import 'package:temrinnotuygulamasiiki/features/ders/cubit/ders_cubit.dart';
@@ -17,12 +19,11 @@ class DersPageView extends StatefulWidget {
   State<DersPageView> createState() => _DersPageViewState();
 }
 
-//TODO: Dersler view e sınıfadları getirilecek;
-
 class _DersPageViewState extends State<DersPageView> {
   List<dynamic> ogrenciList = [];
-  List<DersModel> durum = [];
+  //List<DersModel> durum = [];
   List<DersModel> dlist = [];
+  List<SinifModel> sinifList = [];
   //late final DersDatabaseProvider dersDatabaseProvider;
   DersModel dersModel = DersModel();
 
@@ -30,7 +31,10 @@ class _DersPageViewState extends State<DersPageView> {
   void initState() {
     super.initState();
     //dersDatabaseProvider = DersDatabaseProvider();
+    sinifListesiniGetir;
   }
+
+  Future<void> get sinifListesiniGetir async => sinifList = await SinifDatabaseProvider().getList();
 
   @override
   Widget build(BuildContext context) {
@@ -41,40 +45,25 @@ class _DersPageViewState extends State<DersPageView> {
           drawer: buildDrawer(context),
           appBar: customAppBar(
             search: PopupMenuButton<String>(
-              //onCanceled: () => _viewDersModel.setFiltreDersId(-1),
+              //TODO: SEÇİLEN ELEMANA GÖRE FİLTRE YAPILACAK
+              //onCanceled: () =>
               onSelected: (value) {
                 print(value);
                 //_viewDersModel.setFiltreDersId(int.parse(value));
               },
               itemBuilder: (BuildContext context) {
-                return dlist.map((e) {
-                  return PopupMenuItem(
-                      value: e.id.toString(), child: Text(e.dersAd.toString()));
+                return sinifList.map((e) {
+                  return PopupMenuItem(value: e.id.toString(), child: Text(e.sinifAd.toString()));
                 }).toList();
               },
             ),
             context: context,
-            title:
-                state.isLoading ? const LoadingCenter() : const Text('Dersler'),
+            title: state.isLoading ? const LoadingCenter() : const Text('Dersler'),
           ),
-          floatingActionButtonLocation:
-              FloatingActionButtonLocation.centerDocked,
+          floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
           floatingActionButton: _buildFloatingActionButton(context),
           body: BlocBuilder<DersCubit, DersState>(
             builder: (context, state) {
-              // if (state is DersLoaded) {
-              //   List<DersModel> list = [];
-              //   list = state.ders ?? [];
-              //   return ListView.builder(
-              //     itemCount: list.length,
-              //     itemBuilder: (BuildContext context, int index) {
-              //       return Text(list[index].toString());
-              //     },
-              //   );
-              // } else if (state is DersLoading) {
-              //   return const Center(child: CircularProgressIndicator());
-              // } else if (state is DersFailure) {
-              //   return Text('$state hata oluştu');
               if (state.isCompleted) {
                 dlist = state.dersModel ?? [];
                 return ListView.builder(
@@ -82,6 +71,7 @@ class _DersPageViewState extends State<DersPageView> {
                   itemBuilder: (BuildContext context, int index) {
                     //Text(list[index].toString());
                     return DersCard(
+                        sinifList: sinifList ?? [],
                         transaction: dlist[index],
                         index: index,
                         butons: buildButtons(context, dlist[index]));
@@ -147,8 +137,8 @@ class _DersPageViewState extends State<DersPageView> {
                 MaterialPageRoute(
                   builder: (_) => DersDialog(
                     transaction: transaction,
-                    onClickedDone: (id, dersad, sinifId) => editTransaction(
-                        context, transaction, id ?? 0, dersad, sinifId ?? -1),
+                    onClickedDone: (id, dersad, sinifId) =>
+                        editTransaction(context, transaction, id ?? 0, dersad, sinifId ?? -1),
                   ),
                 ),
               ),
@@ -168,16 +158,14 @@ class _DersPageViewState extends State<DersPageView> {
     context.read<DersCubit>().dersSil(id: dersModel.id!);
   }
 
-  editTransaction(BuildContext context, DersModel dersModel, int id,
-      String dersad, int sinifId) {
+//TODO: DERS DÜZENLE YAPILDIĞINDA SINIF ALANI BOŞ ÇIKIYOR
+  editTransaction(BuildContext context, DersModel dersModel, int id, String dersad, int sinifId) {
     dersModel.id = id;
     dersModel.dersAd = dersad;
     dersModel.sinifId = sinifId;
     context.read<DersCubit>().dersKaydet(id: id, dersModel: dersModel);
   }
 }
-
-
 
 /*
 
@@ -251,7 +239,6 @@ Scaffold(
       ),
     );
  */
-
 
 /*
 Column(

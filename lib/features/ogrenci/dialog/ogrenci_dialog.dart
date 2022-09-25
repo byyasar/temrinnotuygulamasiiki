@@ -12,8 +12,7 @@ import 'package:temrinnotuygulamasiiki/features/sinif/service/sinif_database_pro
 class OgrenciDialog extends StatefulWidget {
   final OgrenciModel? transaction;
 
-  final Function(int? id, String ogrenciAdSoyad, int? ogrenciNu, int? sinifId,
-      String? ogrenciResim) onClickedDone;
+  final Function(int? id, String ogrenciAdSoyad, int? ogrenciNu, int? sinifId, String? ogrenciResim) onClickedDone;
 
   const OgrenciDialog({
     Key? key,
@@ -67,22 +66,12 @@ class _OgrenciDialogState extends State<OgrenciDialog> {
         builder: (context, state) {
           if (state.isCompleted) {
             tSinif = state.sinifModel ?? [];
-             String selectedItem = "";
-            if (isEditing) {
-             
+            String selectedItem = "";
+            if (isEditing && selectedItem.isNotEmpty) {
               selectedItem = widget.transaction!.sinifId.toString();
-              SinifModel? sItem = tSinif.firstWhere(
-                  (element) => element.id == int.tryParse(selectedItem));
+              SinifModel? sItem = tSinif.firstWhere((element) => element.id == int.tryParse(selectedItem));
               selectedItem = sItem.sinifAd ?? "";
             }
-
-            /* final index = tSinif.indexWhere((element) =>
-        element.id == int.tryParse(selectedItem??"0"));
-  if (index >= 0) {
-    print('Using indexWhere: ${tSinif[index]}');
-     selectedItem = tSinif[index].sinifAd??"";
-  }
- */
             return AlertDialog(
               title: Text(title),
               content: Form(
@@ -115,17 +104,14 @@ class _OgrenciDialogState extends State<OgrenciDialog> {
                         final isValid = formKey.currentState!.validate();
 
                         if (isValid) {
-                          String? ogrenciAdSoyad =
-                              ogrenciadController.text.toUpperCase();
+                          String? ogrenciAdSoyad = ogrenciadController.text.toUpperCase();
                           // int? nu = int.parse(nuController.text);
                           int? id = sonId;
                           //int? sinifID = sinifId;
                           int? ogrenciNu = int.parse(nuController.text);
                           String? ogrenciResim = "";
 
-
-                          widget.onClickedDone(id, ogrenciAdSoyad, ogrenciNu,
-                              sinifId, ogrenciResim);
+                          widget.onClickedDone(id, ogrenciAdSoyad, ogrenciNu, sinifId, ogrenciResim);
                           Navigator.of(context).pop();
                         }
                       },
@@ -142,9 +128,7 @@ class _OgrenciDialogState extends State<OgrenciDialog> {
     );
   }
 
-  Widget buildSinif(BuildContext context, List<SinifModel> transactionsSinif,
-          String? selectItem) =>
-      SizedBox(
+  Widget buildSinif(BuildContext context, List<SinifModel> transactionsSinif, String? selectItem) => SizedBox(
         width: MediaQuery.of(context).size.width * .6,
         child: DropdownSearch<String>(
           //mode: Mode.MENU,
@@ -154,13 +138,10 @@ class _OgrenciDialogState extends State<OgrenciDialog> {
           //hint: "country in menu mode",
           onChanged: (value) {
             //print('seçilen $value');
-            int _sinifid = transactionsSinif
-                    .singleWhere((element) => element.sinifAd == value)
-                    .id ??
-                -1;
-           
-              sinifId = _sinifid;
-            
+            int _sinifid = transactionsSinif.singleWhere((element) => element.sinifAd == value).id ?? -1;
+
+            sinifId = _sinifid;
+
             // sinifStore.setSinifId(sinifid);
             //print('storedan glen id' + sinifid.toString());
           },
@@ -174,9 +155,7 @@ class _OgrenciDialogState extends State<OgrenciDialog> {
           border: OutlineInputBorder(),
           hintText: 'Öğrenci Adını Giriniz',
         ),
-        validator: (ogrenciAd) => ogrenciAd != null && ogrenciAd.isEmpty
-            ? 'Öğrenci Adını Yazınız'
-            : null,
+        validator: (ogrenciAd) => ogrenciAd != null && ogrenciAd.isEmpty ? 'Öğrenci Adını Yazınız' : null,
       );
 
   Widget buildNu() => TextFormField(
