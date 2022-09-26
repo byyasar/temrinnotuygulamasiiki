@@ -28,12 +28,12 @@ class TemrinNotModel extends DatabaseModel<TemrinNotModel> {
       this.notTarih});
 
   @override
-  TemrinNotModel fromJson(Map<String, Object> json) {
+  TemrinNotModel fromJson(Map<String, Object?> json) {
     return _$TemrinNotModelFromJson(json);
   }
 
   @override
-  Map<String, Object?> toJson() {
+  Map<String, dynamic> toJson() {
     return _$TemrinNotModelToJson(this);
   }
 }
