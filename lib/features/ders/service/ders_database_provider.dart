@@ -23,11 +23,27 @@ class DersDatabaseProvider extends DatabaseProvider<DersModel> {
   @override
   Future<DersModel> getItem(int id) async {
     _database ??= await open();
-    var userMaps = await _database!.query(_dersTableName, where: '$columnId = ?', whereArgs: [id]);
+    var userMaps = await _database!
+        .query(_dersTableName, where: '$columnId = ?', whereArgs: [id]);
     if (userMaps.isNotEmpty) {
       return DersModel().fromJson(userMaps.first);
     } else {
       throw UnimplementedError();
+    }
+  }
+
+  @override
+  Future<List<DersModel>> getFilterList(int id) async {
+    _database ??= await open();
+    //var sonuc = await _database!.query(_dersTableName);
+    var sonuc = await _database!
+        .query(_dersTableName, where: '$columnSinifId = ?', whereArgs: [id]);
+
+    if (sonuc.isNotEmpty) {
+      _dersMaps = sonuc.map((e) => DersModel().fromJson(e)).toList();
+      return _dersMaps;
+    } else {
+      return [];
     }
   }
 
@@ -68,7 +84,8 @@ class DersDatabaseProvider extends DatabaseProvider<DersModel> {
   Future<bool> removeItem(int id) async {
     _database ??= await open();
     if (_database != null) {
-      await _database!.delete(_dersTableName, where: '$columnId=?', whereArgs: [id]);
+      await _database!
+          .delete(_dersTableName, where: '$columnId=?', whereArgs: [id]);
       return true;
     }
     return false;
@@ -83,7 +100,8 @@ class DersDatabaseProvider extends DatabaseProvider<DersModel> {
   Future<bool> updateItem(int id, DersModel model) async {
     _database ??= await open();
     if (_database != null) {
-      await _database!.update(_dersTableName, model.toJson(), where: '$columnId = ?', whereArgs: [id]);
+      await _database!.update(_dersTableName, model.toJson(),
+          where: '$columnId = ?', whereArgs: [id]);
       return true;
     }
     return false;

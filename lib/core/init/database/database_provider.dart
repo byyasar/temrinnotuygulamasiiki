@@ -5,6 +5,7 @@ abstract class DatabaseProvider<T extends DatabaseModel> {
   Future open();
   Future<T> getItem(int id);
   Future<List<T>> getList();
+  Future<List<T>> getFilterList(int id);
   Future<bool> updateItem(int id, T model);
   Future<bool> removeItem(int id);
   Future<bool> insertItem(T model);

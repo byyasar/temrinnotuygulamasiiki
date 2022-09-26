@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:temrinnotuygulamasiiki/features/ders/model/ders_model.dart';
 import 'package:temrinnotuygulamasiiki/features/ders/service/ders_database_provider.dart';
 import 'package:temrinnotuygulamasiiki/features/temrin/dialog/temrin_dialog.dart';
+import 'package:temrinnotuygulamasiiki/features/theme/light_theme.dart';
 import 'package:temrinnotuygulamasiiki/widget/build_drawer.dart';
 import 'package:temrinnotuygulamasiiki/core/widget/custom_appbar.dart';
 import 'package:temrinnotuygulamasiiki/features/temrin/cubit/temrin_cubit.dart';
@@ -21,18 +22,20 @@ class TemrinPageView extends StatefulWidget {
 
 class _TemrinPageViewState extends State<TemrinPageView> {
   List<TemrinModel> durum = [];
-  List<DersModel>? dersList = [];
+  List<DersModel> dersList = [];
   TemrinModel temrinModel = TemrinModel();
-
+  late int filtreId = -1;
   @override
   void initState() {
     super.initState();
-    //temrinDatabaseProvider = TemrinDatabaseProvider();
     dersListesiGetir;
   }
 
-  Future<void> get dersListesiGetir async =>
-      dersList = await DersDatabaseProvider().getList();
+  Future<void> get dersListesiGetir async {
+    dersList = await DersDatabaseProvider().getList();
+    DersModel tumuModel = DersModel(id: -1, dersAd: "Tüm Dersler");
+    dersList.insert(0, tumuModel);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,44 +45,71 @@ class _TemrinPageViewState extends State<TemrinPageView> {
           create: (context) =>
               TemrinCubit(databaseProvider: TemrinDatabaseProvider()),
         ),
-        /*  BlocProvider(
-          create: (context) =>
-              DersCubit(databaseProvider: DersDatabaseProvider()),
-        ), */
       ],
       child: BlocBuilder<TemrinCubit, TemrinState>(builder: (context, state) {
         return Scaffold(
-          //appBar: customAppBar(context, 'Database İşlemleri'),
           drawer: buildDrawer(context),
           appBar: customAppBar(
+            search: PopupMenuButton<String>(
+              color: LighTheme().theme.appBarTheme.shadowColor,
+              shape: RoundedRectangleBorder(
+                  borderRadius:
+                      BorderRadius.vertical(bottom: Radius.circular(10))),
+              icon: Icon(Icons.filter),
+              onCanceled: () {
+                filtreId = -1;
+                context.read<TemrinCubit>().temrinleriGetir();
+              },
+              onSelected: (value) {
+                print(value);
+                filtreId = int.tryParse(value) ?? -1;
+                filtreId == -1
+                    ? context.read<TemrinCubit>().temrinleriGetir()
+                    : context
+                        .read<TemrinCubit>()
+                        .filtrelenmisTemrinleriGetir(filtreId);
+              },
+              itemBuilder: (BuildContext context) {
+                return dersList.map((e) {
+                  return PopupMenuItem(
+                      value: e.id.toString(),
+                      child: Center(child: Text(e.dersAd.toString())));
+                }).toList();
+              },
+            ),
             context: context,
             title: state.isLoading
                 ? const LoadingCenter()
                 : const Text('Temrinler'),
           ),
-
           floatingActionButtonLocation:
               FloatingActionButtonLocation.centerDocked,
           floatingActionButton: _buildFloatingActionButton(context),
-
           body: BlocBuilder<TemrinCubit, TemrinState>(
             builder: (context, state) {
               if (state.isCompleted) {
                 List<TemrinModel> list = [];
 
                 list = state.temrinModel ?? [];
-                return ListView.builder(
-                  itemCount: list.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    //Text(list[index].toString());
-
-                    return TemrinCard(
-                        dersList: dersList,
-                        transaction: list[index],
-                        index: index,
-                        butons: buildButtons(context, list[index]));
-                  },
-                );
+                if (list.isEmpty) {
+                  return const Center(
+                    child: Text(
+                      'Henüz Temrin Yok!',
+                      style: TextStyle(fontSize: 24),
+                    ),
+                  );
+                } else {
+                  return ListView.builder(
+                    itemCount: list.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return TemrinCard(
+                          dersList: dersList,
+                          transaction: list[index],
+                          index: index,
+                          butons: buildButtons(context, list[index]));
+                    },
+                  );
+                }
               } else {
                 return const SizedBox(height: 1);
               }
@@ -91,13 +121,9 @@ class _TemrinPageViewState extends State<TemrinPageView> {
   }
 
   Future addTransaction(int? id, String? temrinad, int? dersId) async {
-    //TemrinModel temrinModel = TemrinModel(id: id, temrinAd: temrinad, dersId: dersId);
-    // _temrinListesiHelper.addItem(temrinModel);
-    //await temrinDatabaseProvider.open();
     temrinModel.temrinKonusu = temrinad ?? "";
     temrinModel.dersId = dersId;
     temrinModel.id = null;
-    //context.read<TemrinCubit>().temrinKaydet(temrinModel: temrinModel);
   }
 
   Widget _buildFloatingActionButton(BuildContext context) {
@@ -121,11 +147,6 @@ class _TemrinPageViewState extends State<TemrinPageView> {
                     .temrinKaydet(temrinModel: temrinModel);
               }
             });
-
-            /* TemrinModel temrinModel = TemrinModel();
-            temrinModel.temrinAd = 'aaa';
-            temrinModel.dersId = 2;
-            context.read<TemrinCubit>().temrinKaydet(temrinModel: temrinModel); */
           }),
     );
   }

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:temrinnotuygulamasiiki/features/sinif/model/sinif_model.dart';
+import 'package:temrinnotuygulamasiiki/features/sinif/service/sinif_database_provider.dart';
+import 'package:temrinnotuygulamasiiki/features/theme/light_theme.dart';
 import 'package:temrinnotuygulamasiiki/widget/build_drawer.dart';
 import 'package:temrinnotuygulamasiiki/core/widget/custom_appbar.dart';
 import 'package:temrinnotuygulamasiiki/features/ogrenci/cubit/ogrenci_cubit.dart';
@@ -20,6 +23,21 @@ class OgrenciPageView extends StatefulWidget {
 class _OgrenciPageViewState extends State<OgrenciPageView> {
   List<dynamic> ogrenciList = [];
   OgrenciModel ogrenciModel = OgrenciModel();
+  List<SinifModel> sinifList = [];
+  late int filtreId = -1;
+
+  @override
+  void initState() {
+    super.initState();
+    sinifListesiniGetir;
+  }
+
+  Future<void> get sinifListesiniGetir async {
+    sinifList = await SinifDatabaseProvider().getList();
+    SinifModel tumuModel = SinifModel(id: -1, sinifAd: "Tüm Sınıflar");
+    sinifList.insert(0, tumuModel);
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
@@ -29,10 +47,37 @@ class _OgrenciPageViewState extends State<OgrenciPageView> {
         return Scaffold(
           drawer: buildDrawer(context),
           appBar: customAppBar(
-              context:context,
-              title:state.isLoading
+              search: PopupMenuButton<String>(
+                color: LighTheme().theme.appBarTheme.shadowColor,
+                shape: RoundedRectangleBorder(
+                    borderRadius:
+                        BorderRadius.vertical(bottom: Radius.circular(10))),
+                icon: Icon(Icons.filter),
+                onCanceled: () {
+                  filtreId = -1;
+                  context.read<OgrenciCubit>().ogrencileriGetir();
+                },
+                onSelected: (value) {
+                  print(value);
+                  filtreId = int.tryParse(value) ?? -1;
+                  filtreId == -1
+                      ? context.read<OgrenciCubit>().ogrencileriGetir()
+                      : context
+                          .read<OgrenciCubit>()
+                          .filtrelenmisOgrencileriGetir(filtreId);
+                },
+                itemBuilder: (BuildContext context) {
+                  return sinifList.map((e) {
+                    return PopupMenuItem(
+                        value: e.id.toString(),
+                        child: Center(child: Text(e.sinifAd.toString())));
+                  }).toList();
+                },
+              ),
+              context: context,
+              title: state.isLoading
                   ? const LoadingCenter()
-                  : const Text('TNS-Öğrenci Listesi')),
+                  : const Text('Öğrenci Listesi')),
           body: _buildBody,
           floatingActionButtonLocation:
               FloatingActionButtonLocation.centerDocked,
@@ -61,6 +106,7 @@ class _OgrenciPageViewState extends State<OgrenciPageView> {
               itemBuilder: (BuildContext context, int index) {
                 //Text(list[index].toString());
                 return OgrenciCard(
+                    sinifList: sinifList,
                     transaction: list[index],
                     index: index,
                     butons: buildButtons(context, list[index]));

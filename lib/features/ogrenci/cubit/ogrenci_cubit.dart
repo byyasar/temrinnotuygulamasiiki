@@ -15,25 +15,36 @@ class OgrenciCubit extends Cubit<OgrenciState> {
   Future<void> ogrencileriGetir() async {
     emit(state.copyWith(isLoading: true));
     final ogrenciList = await _databaseProvider.getList();
-    emit(state.copyWith(ogrenciModel: ogrenciList, isLoading: false, isCompleted: true));
-   }
-    
-  Future<void> ogrenciKaydet({int? id, required OgrenciModel ogrenciModel}) async {
-     emit(state.copyWith(isLoading: true));
-   
-      if (id == null) {
-        await _databaseProvider.insertItem(ogrenciModel);
-      } else {
-        await _databaseProvider.updateItem(id, ogrenciModel);
-      }
-      final ogrenciList = await _databaseProvider.getList();
-     emit(state.copyWith(ogrenciModel: ogrenciList, isLoading: false, isCompleted: true));
+    emit(state.copyWith(
+        ogrenciModel: ogrenciList, isLoading: false, isCompleted: true));
+  }
+
+  Future<void> filtrelenmisOgrencileriGetir(int sinifId) async {
+    emit(state.copyWith(isLoading: true));
+    final ogrenciList = await _databaseProvider.getFilterList(sinifId);
+    emit(state.copyWith(
+        ogrenciModel: ogrenciList, isLoading: false, isCompleted: true));
+  }
+
+  Future<void> ogrenciKaydet(
+      {int? id, required OgrenciModel ogrenciModel}) async {
+    emit(state.copyWith(isLoading: true));
+
+    if (id == null) {
+      await _databaseProvider.insertItem(ogrenciModel);
+    } else {
+      await _databaseProvider.updateItem(id, ogrenciModel);
+    }
+    final ogrenciList = await _databaseProvider.getList();
+    emit(state.copyWith(
+        ogrenciModel: ogrenciList, isLoading: false, isCompleted: true));
   }
 
   Future<void> ogrenciSil({required int id}) async {
     emit(state.copyWith(isLoading: true));
-      await _databaseProvider.removeItem(id);
-      final ogrenciList = await _databaseProvider.getList();
-     emit(state.copyWith(ogrenciModel: ogrenciList, isLoading: false, isCompleted: true));
+    await _databaseProvider.removeItem(id);
+    final ogrenciList = await _databaseProvider.getList();
+    emit(state.copyWith(
+        ogrenciModel: ogrenciList, isLoading: false, isCompleted: true));
   }
 }

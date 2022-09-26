@@ -12,7 +12,6 @@ import 'package:temrinnotuygulamasiiki/features/ders/service/ders_database_provi
 class TemrinDialog extends StatefulWidget {
   final TemrinModel? transaction;
   final Function(int? id, String temrinkonusu, int? dersId) onClickedDone;
-  //inal Function(TemrinModel) onClickedDone;
 
   const TemrinDialog({
     Key? key,
@@ -28,7 +27,6 @@ class _TemrinDialogState extends State<TemrinDialog> {
   final formKey = GlobalKey<FormState>();
   final temrinkonusuController = TextEditingController();
   int? dersId;
-  // DersStore dersStore = DersStore();
   List<DersModel> transactionsDers = [];
   @override
   void initState() {
@@ -38,9 +36,6 @@ class _TemrinDialogState extends State<TemrinDialog> {
       final transaction = widget.transaction!;
       temrinkonusuController.text = transaction.temrinKonusu ?? "";
     }
-    // if (transactionsDers.isEmpty) {
-    //   dersListesiniDoldur();
-    // }
   }
 
   @override
@@ -106,10 +101,7 @@ class _TemrinDialogState extends State<TemrinDialog> {
                           if (isValid) {
                             String? temrinkonusu =
                                 temrinkonusuController.text.toUpperCase();
-                            //TemrinModel temrinModel = TemrinModel();
                             int? id = sonId;
-                            //String temrinKonusu = temrinkonusu;
-                           
                             widget.onClickedDone(id, temrinkonusu, dersId);
                             Navigator.of(context)
                                 .pop(); //todo: navigator pop return value
@@ -132,25 +124,16 @@ class _TemrinDialogState extends State<TemrinDialog> {
       SizedBox(
         width: MediaQuery.of(context).size.width * .6,
         child: DropdownSearch<String>(
-          //mode: Mode.MENU,
           items: buildItems(transactionsDers),
           selectedItem: selectItem,
-          //label: "Sınıflar",
-          //hint: "country in menu mode",
           onChanged: (value) {
-            //print('seçilen $value');
             int _dersid = transactionsDers
                     .singleWhere((element) => element.dersAd == value)
                     .id ??
                 -1;
             dersId = _dersid;
-            // setState(() {
-            //   dersId = _dersid;
-            // });
-            // dersStore.setDersId(dersid);
-            //print('storedan glen id' + dersid.toString());
+           
           },
-          //selectedItem: ,
         ),
       );
 
@@ -165,10 +148,6 @@ class _TemrinDialogState extends State<TemrinDialog> {
       );
 
   List<String> buildItems(List<DersModel> dersModel) {
-    // List<String> items = DersBoxes.getTransactions()
-    //     .values
-    //     .map((e) => e.dersAd.toString())
-    //     .toList();
     final items = dersModel.map((e) => e.dersAd.toString()).toList();
     print(items);
     return items;

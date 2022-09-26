@@ -19,6 +19,13 @@ class DersCubit extends Cubit<DersState> {
         dersModel: dersList, isLoading: false, isCompleted: true));
   }
 
+  Future<void> filtrelenmisDersleriGetir(int sinifId) async {
+    emit(state.copyWith(isLoading: true));
+    final dersList = await _databaseProvider.getFilterList(sinifId);
+    emit(state.copyWith(
+        dersModel: dersList, isLoading: false, isCompleted: true));
+  }
+
   Future<void> dersAdGetir(int id) async {
     emit(state.copyWith(isLoading: true));
     final dersList = await _databaseProvider.getItem(id);

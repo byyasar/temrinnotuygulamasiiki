@@ -28,7 +28,8 @@ class DersCard extends StatelessWidget {
           maxLines: 2,
           style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
         ),
-        subtitle: Text("id: ${transaction.id.toString()} sinif : ${sinifAdiniGetir(transaction.sinifId)}"),
+        subtitle: Text(
+            "id: ${transaction.id.toString()} sinif : ${sinifAdiniGetir(transaction.sinifId)}"),
         children: [butons],
       ),
     );
@@ -38,5 +39,6 @@ class DersCard extends StatelessWidget {
     if (sinifList!.isNotEmpty) {
       return sinifList!.firstWhere((element) => element.id == id).sinifAd ?? "";
     }
+    return null;
   }
 }

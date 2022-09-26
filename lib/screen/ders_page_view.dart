@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:temrinnotuygulamasiiki/features/sinif/model/sinif_model.dart';
 import 'package:temrinnotuygulamasiiki/features/sinif/service/sinif_database_provider.dart';
+import 'package:temrinnotuygulamasiiki/features/theme/light_theme.dart';
 import 'package:temrinnotuygulamasiiki/widget/build_drawer.dart';
 import 'package:temrinnotuygulamasiiki/core/widget/custom_appbar.dart';
 import 'package:temrinnotuygulamasiiki/features/ders/cubit/ders_cubit.dart';
@@ -21,20 +22,22 @@ class DersPageView extends StatefulWidget {
 
 class _DersPageViewState extends State<DersPageView> {
   List<dynamic> ogrenciList = [];
-  //List<DersModel> durum = [];
   List<DersModel> dlist = [];
   List<SinifModel> sinifList = [];
-  //late final DersDatabaseProvider dersDatabaseProvider;
   DersModel dersModel = DersModel();
+  late int filtreId = -1;
 
   @override
   void initState() {
     super.initState();
-    //dersDatabaseProvider = DersDatabaseProvider();
     sinifListesiniGetir;
   }
 
-  Future<void> get sinifListesiniGetir async => sinifList = await SinifDatabaseProvider().getList();
+  Future<void> get sinifListesiniGetir async {
+    sinifList = await SinifDatabaseProvider().getList();
+    SinifModel tumuModel = SinifModel(id: -1, sinifAd: "Tüm Sınıflar");
+    sinifList.insert(0, tumuModel);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,38 +48,63 @@ class _DersPageViewState extends State<DersPageView> {
           drawer: buildDrawer(context),
           appBar: customAppBar(
             search: PopupMenuButton<String>(
-              //TODO: SEÇİLEN ELEMANA GÖRE FİLTRE YAPILACAK
-              //onCanceled: () =>
+              color: LighTheme().theme.appBarTheme.shadowColor,
+              shape: RoundedRectangleBorder(
+                  borderRadius:
+                      BorderRadius.vertical(bottom: Radius.circular(10))),
+              icon: Icon(Icons.filter),
+              onCanceled: () {
+                filtreId = -1;
+                context.read<DersCubit>().dersleriGetir();
+              },
               onSelected: (value) {
                 print(value);
-                //_viewDersModel.setFiltreDersId(int.parse(value));
+                filtreId = int.tryParse(value) ?? -1;
+                filtreId == -1
+                    ? context.read<DersCubit>().dersleriGetir()
+                    : context
+                        .read<DersCubit>()
+                        .filtrelenmisDersleriGetir(filtreId);
               },
               itemBuilder: (BuildContext context) {
                 return sinifList.map((e) {
-                  return PopupMenuItem(value: e.id.toString(), child: Text(e.sinifAd.toString()));
+                  return PopupMenuItem(
+                      value: e.id.toString(),
+                      child: Center(child: Text(e.sinifAd.toString())));
                 }).toList();
               },
             ),
             context: context,
-            title: state.isLoading ? const LoadingCenter() : const Text('Dersler'),
+            title: state.isLoading
+                ? const LoadingCenter()
+                : const Text('Ders Listesi'),
           ),
-          floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+          floatingActionButtonLocation:
+              FloatingActionButtonLocation.centerDocked,
           floatingActionButton: _buildFloatingActionButton(context),
           body: BlocBuilder<DersCubit, DersState>(
             builder: (context, state) {
               if (state.isCompleted) {
                 dlist = state.dersModel ?? [];
-                return ListView.builder(
-                  itemCount: dlist.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    //Text(list[index].toString());
-                    return DersCard(
-                        sinifList: sinifList ?? [],
-                        transaction: dlist[index],
-                        index: index,
-                        butons: buildButtons(context, dlist[index]));
-                  },
-                );
+                if (dlist.isEmpty) {
+                  return const Center(
+                    child: Text(
+                      'Henüz Ders Yok!',
+                      style: TextStyle(fontSize: 24),
+                    ),
+                  );
+                } else {
+                  return ListView.builder(
+                    itemCount: dlist.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return DersCard(
+                          sinifList: sinifList,
+                          transaction: dlist[index],
+                          index: index,
+                          butons: buildButtons(context, dlist[index]));
+                    },
+                  );
+                }
               } else {
                 return const SizedBox(height: 1);
               }
@@ -88,13 +116,9 @@ class _DersPageViewState extends State<DersPageView> {
   }
 
   Future addTransaction(int? id, String? dersad, int? sinifId) async {
-    //DersModel dersModel = DersModel(id: id, dersAd: dersad, sinifId: sinifId);
-    // _dersListesiHelper.addItem(dersModel);
-    //await dersDatabaseProvider.open();
     dersModel.dersAd = dersad ?? "";
     dersModel.sinifId = sinifId;
     dersModel.id = null;
-    //context.read<DersCubit>().dersKaydet(dersModel: dersModel);
   }
 
   Widget _buildFloatingActionButton(BuildContext context) {
@@ -116,16 +140,9 @@ class _DersPageViewState extends State<DersPageView> {
                 context.read<DersCubit>().dersKaydet(dersModel: dersModel);
               }
             });
-
-            /* DersModel dersModel = DersModel();
-            dersModel.dersAd = 'aaa';
-            dersModel.sinifId = 2;
-            context.read<DersCubit>().dersKaydet(dersModel: dersModel); */
           }),
     );
   }
-
-//context.read<DersCubit>().dersKaydet(dersModel: dersModel);
 
   Widget buildButtons(BuildContext context, DersModel transaction) => Row(
         children: [
@@ -137,8 +154,8 @@ class _DersPageViewState extends State<DersPageView> {
                 MaterialPageRoute(
                   builder: (_) => DersDialog(
                     transaction: transaction,
-                    onClickedDone: (id, dersad, sinifId) =>
-                        editTransaction(context, transaction, id ?? 0, dersad, sinifId ?? -1),
+                    onClickedDone: (id, dersad, sinifId) => editTransaction(
+                        context, transaction, id ?? 0, dersad, sinifId ?? -1),
                   ),
                 ),
               ),
@@ -158,125 +175,11 @@ class _DersPageViewState extends State<DersPageView> {
     context.read<DersCubit>().dersSil(id: dersModel.id!);
   }
 
-//TODO: DERS DÜZENLE YAPILDIĞINDA SINIF ALANI BOŞ ÇIKIYOR
-  editTransaction(BuildContext context, DersModel dersModel, int id, String dersad, int sinifId) {
+  editTransaction(BuildContext context, DersModel dersModel, int id,
+      String dersad, int sinifId) {
     dersModel.id = id;
     dersModel.dersAd = dersad;
     dersModel.sinifId = sinifId;
     context.read<DersCubit>().dersKaydet(id: id, dersModel: dersModel);
   }
 }
-
-/*
-
-
-Scaffold(
-      floatingActionButton: Column(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          FloatingActionButton(
-            child: const Icon(Icons.all_inbox),
-            onPressed: () async {
-              verileriGetir();
-              setState(() {});
-            },
-          ),
-          FloatingActionButton(
-            child: const Icon(Icons.update),
-            onPressed: () async {
-              //DersDatabaseProvider dersDatabaseProvider = DersDatabaseProvider();
-              await dersDatabaseProvider.open();
-              DersModel dersModel = DersModel();
-              dersModel.dersAd = "yaşar ders";
-              dersModel.sinifId = 2;
-              dersModel.id = 8;
-              DersModel derslist;
-              bool durum = await dersDatabaseProvider.updateItem(8, dersModel);
-            },
-          ),
-          FloatingActionButton(
-            child: const Icon(Icons.remove),
-            onPressed: () async {
-              //DersDatabaseProvider dersDatabaseProvider = DersDatabaseProvider();
-              await dersDatabaseProvider.open();
-              bool durum = await dersDatabaseProvider.removeItem(6);
-            },
-          ),
-          FloatingActionButton(
-            child: const Icon(Icons.add),
-            onPressed: () async {
-              //DersDatabaseProvider dersDatabaseProvider = DersDatabaseProvider();
-              await dersDatabaseProvider.open();
-              DersModel dersModel = DersModel();
-              dersModel.dersAd = "pc";
-              dersModel.sinifId = 2;
-              DersModel derslist;
-              bool durum = await dersDatabaseProvider.insertItem(dersModel);
-              inspect(durum);
-            },
-          ),
-          FloatingActionButton(
-            child: const Icon(Icons.list),
-            onPressed: () async {
-              await dersDatabaseProvider.open();
-              DersModel dersModel;
-              int id = 5;
-              dersModel = await dersDatabaseProvider.getItem(id);
-              inspect(dersModel);
-            },
-          ),
-        ],
-      ),
-      body: Container(
-        //color: Colors.amber,
-        child: ListView.builder(
-          itemCount: durum.length,
-          itemBuilder: (BuildContext context, int index) {
-            return Text(
-                '${durum[index].id.toString()} - ${durum[index].dersAd ?? ""} - ${durum[index].sinifId.toString()}');
-          },
-        ),
-      ),
-    );
- */
-
-/*
-Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              FloatingActionButton(
-                child: const Icon(Icons.all_inbox),
-                onPressed: () async {
-                  // context.read<DersCubit>().dersleriGetir();
-                },
-              ),
-              FloatingActionButton(
-                child: const Icon(Icons.remove),
-                onPressed: () async {
-                  context.read<DersCubit>().dersSil(id: 3);
-                },
-              ),
-              FloatingActionButton(
-                child: const Icon(Icons.add),
-                onPressed: () async {
-                  DersModel dersModel = DersModel();
-                  dersModel.dersAd = "pc";
-                  dersModel.sinifId = 2;
-                  context.read<DersCubit>().dersKaydet(dersModel: dersModel);
-                },
-              ),
-              FloatingActionButton(
-                child: const Icon(Icons.list),
-                onPressed: () async {
-                  DersModel dersModel = DersModel();
-                  dersModel.dersAd = "web tasarım";
-                  dersModel.sinifId = 2;
-                  dersModel.id = 1;
-                  context.read<DersCubit>().dersKaydet(dersModel: dersModel);
-                  // context.read<DersCubit>().dersKaydet(id: 5, dersModel: dersModel);
-                },
-              ),
-            ],
-          ),
-
- */

@@ -11,6 +11,7 @@ class OgrenciDatabaseProvider extends DatabaseProvider<OgrenciModel> {
 
   String columnId = "id";
   String columnOgrenciAd = "ogrenciAd";
+  String columnSinifId = "sinifId";
 
   @override
   Future<Database?> open() async {
@@ -22,7 +23,8 @@ class OgrenciDatabaseProvider extends DatabaseProvider<OgrenciModel> {
   @override
   Future<OgrenciModel> getItem(int id) async {
     _database ??= await open();
-    var userMaps = await _database!.query(_ogrenciTableName, where: '$columnId = ?', whereArgs: [id]);
+    var userMaps = await _database!
+        .query(_ogrenciTableName, where: '$columnId = ?', whereArgs: [id]);
     if (userMaps.isNotEmpty) {
       return OgrenciModel().fromJson(userMaps.first);
     } else {
@@ -40,6 +42,19 @@ class OgrenciDatabaseProvider extends DatabaseProvider<OgrenciModel> {
       return _ogrenciMaps;
     } else {
       return _ogrenciMaps;
+    }
+  }
+
+  @override
+  Future<List<OgrenciModel>> getFilterList(int id) async {
+    _database ??= await open();
+    var sonuc = await _database!
+        .query(_ogrenciTableName, where: '$columnSinifId = ?', whereArgs: [id]);
+    if (sonuc.isNotEmpty) {
+      _ogrenciMaps = sonuc.map((e) => OgrenciModel().fromJson(e)).toList();
+      return _ogrenciMaps;
+    } else {
+      return [];
     }
   }
 
@@ -66,7 +81,8 @@ class OgrenciDatabaseProvider extends DatabaseProvider<OgrenciModel> {
   Future<bool> removeItem(int id) async {
     _database ??= await open();
     if (_database != null) {
-      await _database!.delete(_ogrenciTableName, where: '$columnId=?', whereArgs: [id]);
+      await _database!
+          .delete(_ogrenciTableName, where: '$columnId=?', whereArgs: [id]);
       return true;
     }
     return false;
@@ -81,7 +97,8 @@ class OgrenciDatabaseProvider extends DatabaseProvider<OgrenciModel> {
   Future<bool> updateItem(int id, OgrenciModel model) async {
     _database ??= await open();
     if (_database != null) {
-      await _database!.update(_ogrenciTableName, model.toJson(), where: '$columnId = ?', whereArgs: [id]);
+      await _database!.update(_ogrenciTableName, model.toJson(),
+          where: '$columnId = ?', whereArgs: [id]);
       return true;
     }
     return false;

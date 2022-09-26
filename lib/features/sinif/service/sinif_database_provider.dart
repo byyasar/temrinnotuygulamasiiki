@@ -86,4 +86,10 @@ class SinifDatabaseProvider extends DatabaseProvider<SinifModel> {
     }
     return false;
   }
+  
+  @override
+  Future<List<SinifModel>> getFilterList(int id) {
+    // TODO: implement getFilterList
+    throw UnimplementedError();
+  }
 }

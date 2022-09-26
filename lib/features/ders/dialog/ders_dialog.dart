@@ -12,7 +12,6 @@ import 'package:temrinnotuygulamasiiki/features/sinif/service/sinif_database_pro
 class DersDialog extends StatefulWidget {
   final DersModel? transaction;
   final Function(int? id, String dersad, int? sinifId) onClickedDone;
-  //inal Function(DersModel) onClickedDone;
 
   const DersDialog({
     Key? key,
@@ -28,7 +27,6 @@ class _DersDialogState extends State<DersDialog> {
   final formKey = GlobalKey<FormState>();
   final dersadController = TextEditingController();
   int? sinifId;
-  // SinifStore sinifStore = SinifStore();
   List<SinifModel> transactionsSinif = [];
   @override
   void initState() {
@@ -38,9 +36,6 @@ class _DersDialogState extends State<DersDialog> {
       final transaction = widget.transaction!;
       dersadController.text = transaction.dersAd ?? "";
     }
-    // if (transactionsSinif.isEmpty) {
-    //   sinifListesiniDoldur();
-    // }
   }
 
   @override
@@ -69,7 +64,7 @@ class _DersDialogState extends State<DersDialog> {
             //print(state.sinifModel);
             tSinif = state.sinifModel ?? [];
             String selectedItem = "";
-            if (isEditing&&selectedItem.isNotEmpty) {
+            if (isEditing) {
               selectedItem = widget.transaction!.sinifId.toString();
               SinifModel? sItem = tSinif.firstWhere(
                   (element) => element.id == int.tryParse(selectedItem));
@@ -107,10 +102,7 @@ class _DersDialogState extends State<DersDialog> {
                           if (isValid) {
                             String? dersad =
                                 dersadController.text.toUpperCase();
-                            //DersModel dersModel = DersModel();
                             int? id = sonId;
-                            //String dersAd = dersad;
-
                             widget.onClickedDone(id, dersad, sinifId);
                             Navigator.of(context)
                                 .pop(); //todo: navigator pop return value
@@ -133,25 +125,15 @@ class _DersDialogState extends State<DersDialog> {
       SizedBox(
         width: MediaQuery.of(context).size.width * .6,
         child: DropdownSearch<String>(
-          //mode: Mode.MENU,
           items: buildItems(transactionsSinif),
           selectedItem: selectItem,
-          //label: "Sınıflar",
-          //hint: "country in menu mode",
           onChanged: (value) {
-            //print('seçilen $value');
             int _sinifid = transactionsSinif
                     .singleWhere((element) => element.sinifAd == value)
                     .id ??
                 -1;
             sinifId = _sinifid;
-            // setState(() {
-            //   sinifId = _sinifid;
-            // });
-            // sinifStore.setSinifId(sinifid);
-            //print('storedan glen id' + sinifid.toString());
           },
-          //selectedItem: ,
         ),
       );
 
