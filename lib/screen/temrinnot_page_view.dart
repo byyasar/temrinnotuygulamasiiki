@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:temrinnotuygulamasiiki/core/widget/custom_appbar.dart';
 import 'package:temrinnotuygulamasiiki/features/ders/model/ders_model.dart';
 import 'package:temrinnotuygulamasiiki/features/ders/service/ders_database_provider.dart';
-import 'package:temrinnotuygulamasiiki/features/temrin/service/temrin_database_provider.dart';
 import 'package:temrinnotuygulamasiiki/features/temrinnot/cubit/temrinnot_cubit.dart';
 import 'package:temrinnotuygulamasiiki/features/temrinnot/cubit/temrinnot_state.dart';
 import 'package:temrinnotuygulamasiiki/features/temrinnot/dialog/temrinnot_dialog.dart';

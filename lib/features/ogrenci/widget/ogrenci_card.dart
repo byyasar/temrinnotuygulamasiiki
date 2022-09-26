@@ -8,12 +8,7 @@ class OgrenciCard extends StatelessWidget {
   final Widget butons;
   final List<SinifModel>? sinifList;
 
-  const OgrenciCard(
-      {Key? key,
-      required this.transaction,
-      required this.index,
-      required this.butons,
-      this.sinifList})
+  const OgrenciCard({Key? key, required this.transaction, required this.index, required this.butons, this.sinifList})
       : super(key: key);
 
   @override
@@ -36,7 +31,10 @@ class OgrenciCard extends StatelessWidget {
 
   String? sinifAdiniGetir(int? id) {
     if (sinifList!.isNotEmpty) {
-      return sinifList!.firstWhere((element) => element.id == id).sinifAd ?? "";
+      String? sinifAd = sinifList!.firstWhere((element) => element.id == id, orElse: () {
+        return SinifModel();
+      }).sinifAd;
+      return sinifAd ?? "";
     }
     return null;
   }

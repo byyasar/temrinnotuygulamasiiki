@@ -7,6 +7,8 @@ import 'package:temrinnotuygulamasiiki/screen/ders_page_view.dart';
 import 'package:temrinnotuygulamasiiki/screen/ogrenci_page_view.dart';
 import 'package:temrinnotuygulamasiiki/screen/sinif_page_view.dart';
 import 'package:temrinnotuygulamasiiki/screen/temrin_page_view.dart';
+import 'package:temrinnotuygulamasiiki/screen/temrinnot_page_view.dart';
+import 'package:temrinnotuygulamasiiki/screen/temrinnot_secim_view.dart';
 
 Drawer buildDrawer(BuildContext context) {
   return Drawer(
@@ -21,10 +23,7 @@ Drawer buildDrawer(BuildContext context) {
           child: Center(
             child: Text(
               'Temrin Not Sistemi v1',
-              style: TextStyle(
-                  fontSize: 22,
-                  color: Colors.black,
-                  backgroundColor: Colors.white),
+              style: TextStyle(fontSize: 22, color: Colors.black, backgroundColor: Colors.white),
             ),
           ),
         ),
@@ -35,8 +34,7 @@ Drawer buildDrawer(BuildContext context) {
             Text('Sınıflar', style: TextStyle(fontSize: 20))
           ]),
           onTap: () {
-            Navigator.of(context).push(
-                MaterialPageRoute(builder: (context) => const SinifPageView()));
+            Navigator.of(context).push(MaterialPageRoute(builder: (context) => const SinifPageView()));
           },
         ),
         const Divider(color: Colors.black, height: 2.0),
@@ -49,8 +47,7 @@ Drawer buildDrawer(BuildContext context) {
             ],
           ),
           onTap: () {
-            Navigator.of(context).push(
-                MaterialPageRoute(builder: (context) => const DersPageView()));
+            Navigator.of(context).push(MaterialPageRoute(builder: (context) => const DersPageView()));
           },
         ),
         const Divider(color: Colors.black, height: 2.0),
@@ -63,8 +60,7 @@ Drawer buildDrawer(BuildContext context) {
             ],
           ),
           onTap: () {
-            Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => const OgrenciPageView()));
+            Navigator.of(context).push(MaterialPageRoute(builder: (context) => const OgrenciPageView()));
           },
         ),
         const Divider(color: Colors.black, height: 2.0),
@@ -90,7 +86,7 @@ Drawer buildDrawer(BuildContext context) {
             ],
           ),
           onTap: () {
-            //Navigator.of(context).push(MaterialPageRoute(builder: (context) => const MainPage()));
+            Navigator.of(context).push(MaterialPageRoute(builder: (context) => const TemrinNotSecimPageView()));
           },
         ),
         const Divider(color: Colors.black, height: 2.0),
@@ -103,7 +99,7 @@ Drawer buildDrawer(BuildContext context) {
             ],
           ),
           onTap: () {
-            //Navigator.of(context).push(MaterialPageRoute(builder: (context) => const SonuclarSelectPage()));
+            Navigator.of(context).push(MaterialPageRoute(builder: (context) => const TemrinNotPageView()));
           },
         ),
         const Divider(color: Colors.black, height: 2.0),
