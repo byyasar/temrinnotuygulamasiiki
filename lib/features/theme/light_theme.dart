@@ -10,6 +10,12 @@ class LighTheme {
         cardTheme: CardTheme(
           color: _lightColor.yellow,
         ),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+            style: ElevatedButton.styleFrom(
+          //foregroundColor: Colors.black12,
+          backgroundColor: Colors.black,
+          primary: Colors.green,
+        )),
         appBarTheme: AppBarTheme(
             titleTextStyle: const TextStyle().copyWith(fontSize: 25, color: Colors.black),
             shadowColor: _lightColor.hotPink,
@@ -28,9 +34,9 @@ class LighTheme {
 }
 
 class _LightColor {
-  final Color _textColor = const Color.fromARGB(255, 37, 5, 5);
+  final Color _textColor = Color.fromARGB(255, 0, 0, 0);
   final Color blueMenia = const Color.fromARGB(95, 188, 248, 1);
-  final Color hotPink = const Color(0xFFFFAEBC);
+  final Color hotPink = Color.fromARGB(255, 255, 11, 255);
   final Color mint = const Color(0xFFB4F8C8);
   final Color tiffanyBlue = const Color(0xFFBA9B8E);
   final Color yellow = const Color(0xFFFBE7C6);
