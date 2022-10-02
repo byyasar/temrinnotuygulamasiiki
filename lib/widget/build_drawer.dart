@@ -99,7 +99,7 @@ Drawer buildDrawer(BuildContext context) {
             ],
           ),
           onTap: () {
-            Navigator.of(context).push(MaterialPageRoute(builder: (context) => const TemrinNotPageView()));
+            Navigator.of(context).push(MaterialPageRoute(builder: (context) => TemrinNotSecimPageView()));
           },
         ),
         const Divider(color: Colors.black, height: 2.0),

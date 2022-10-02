@@ -11,6 +11,7 @@ import 'package:temrinnotuygulamasiiki/features/sinif/model/sinif_model.dart';
 import 'package:temrinnotuygulamasiiki/features/sinif/service/sinif_database_provider.dart';
 import 'package:temrinnotuygulamasiiki/features/temrin/model/temrin_model.dart';
 import 'package:temrinnotuygulamasiiki/features/temrin/service/temrin_database_provider.dart';
+import 'package:temrinnotuygulamasiiki/screen/temrinnot_page_view.dart';
 import 'package:temrinnotuygulamasiiki/widget/build_drawer.dart';
 
 class TemrinNotSecimPageView extends StatefulWidget {
@@ -76,11 +77,16 @@ class _TemrinNotSecimPageViewState extends State<TemrinNotSecimPageView> {
   Padding _buildFloatingAcionButton(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: FloatingActionButton(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-        child: const Icon(Icons.arrow_circle_right_outlined),
+      child: FloatingActionButton.extended(
+        //shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+        label: Text('Not Gir'),
+        icon: const Icon(Icons.arrow_circle_right_outlined),
         onPressed: () {
           print('sinif id $_secilenSinifId, ders id: $_secilenDersId, temrin id: $_secilenTemrinId');
+          Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => TemrinNotPageView(
+                    parametreler: [_secilenSinifId??0,_secilenDersId ??0, _secilenTemrinId ??0],
+                  )));
         },
       ),
     );
@@ -253,13 +259,15 @@ class _TemrinNotSecimPageViewState extends State<TemrinNotSecimPageView> {
         );
       },
     ).then((value) {
-      setState(() {
-        if (_secilenSinifId! > -1 && _secilenDersId! > -1 && _secilenTemrinId! > -1) {
-          durum = true;
-        } else {
-          durum = false;
-        }
-      });
+      if (value != null) {
+        setState(() {
+          if (_secilenSinifId! > -1 && _secilenDersId! > -1 && _secilenTemrinId! > -1) {
+            durum = true;
+          } else {
+            durum = false;
+          }
+        });
+      }
     });
   }
 
