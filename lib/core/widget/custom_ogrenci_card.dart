@@ -1,10 +1,13 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
+
 import 'package:temrinnotuygulamasiiki/features/ogrenci/model/ogrenci_model.dart';
 
 class CustomOgrenciCard extends StatefulWidget {
   final OgrenciModel transaction;
   final int index;
   final int temrinId;
+  final String? puan;
   //final TextEditingController? puanController;
 
 //  final List<int>? parametreler;
@@ -12,30 +15,23 @@ class CustomOgrenciCard extends StatefulWidget {
 
   //final TemrinnotModel? temrinnotModel;
 
-  const CustomOgrenciCard({
-    Key? key,
-    required this.transaction,
-    required this.index,
-    //required this.puanController,
-    required this.temrinId,
-
-    // required this.temrinnotModel,
-  }) : super(key: key);
+  const CustomOgrenciCard(
+      {Key? key,
+      //required this.puanController,
+      required this.transaction,
+      required this.index,
+      required this.temrinId,
+      this.puan = ""})
+      : super(key: key);
 
   @override
   State<CustomOgrenciCard> createState() => _CustomOgrenciCardState();
 }
 
 class _CustomOgrenciCardState extends State<CustomOgrenciCard> {
-  //final _viewModelTemrin = TemrinStore();
   @override
   Widget build(BuildContext context) {
-    //final _viewModelTemrin = TemrinStore();
-
-    // SinifListesiHelper _sinifListesiHelper = SinifListesiHelper(ApplicationConstants.boxSinif);
-
     return Card(
-      //color: Colors.white60,
       child: Row(
         children: [
           Expanded(
@@ -46,19 +42,16 @@ class _CustomOgrenciCardState extends State<CustomOgrenciCard> {
                   Expanded(
                     flex: 10,
                     child: Text(
-                      (widget.index + 1).toString() +
-                          " - " +
-                          widget.transaction.ogrenciAdSoyad.toString(),
+                      (widget.index + 1).toString() + " - " + widget.transaction.ogrenciAdSoyad.toString(),
                       maxLines: 2,
-                      style: const TextStyle(
-                          fontWeight: FontWeight.bold, fontSize: 16),
+                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                     ),
                   ),
                   Expanded(
                       flex: 3,
                       child: CircleAvatar(
-                        //child: Text(widget.puanController!.text),
-                        child: Text("Y"),
+                        child: Text(widget.puan!.toString()),
+                        // child: Text("Y"),
                       )
 
                       /* TextFormField(
@@ -73,7 +66,7 @@ class _CustomOgrenciCardState extends State<CustomOgrenciCard> {
                 ],
               ),
               onLongPress: () {
-                debugPrint('uzun basıldı ${widget.index}');
+                debugPrint('uzun basıldı ${widget.transaction.ogrenciAdSoyad}');
                 // _viewModelOgrenci.setFiltreOgrenciId(widget.transaction.id);
                 // _viewModelTemrin.setFiltretemrinId(widget.temrinId);
                 /*   showDialog(
@@ -94,8 +87,7 @@ class _CustomOgrenciCardState extends State<CustomOgrenciCard> {
                  
                 }); */
               },
-              subtitle: Text(
-                  "Nu: ${widget.transaction.ogrenciNu} Sınıf: ${widget.transaction.sinifId}"),
+              subtitle: Text("Nu: ${widget.transaction.ogrenciNu} Sınıf: ${widget.transaction.sinifId}"),
             ),
           ),
           /*   Expanded(

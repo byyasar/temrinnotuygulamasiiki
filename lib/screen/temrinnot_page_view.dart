@@ -19,48 +19,34 @@ class TemrinNotPageView extends StatefulWidget {
 /*   parametreler: [_secilenSinifId??0,_secilenDersId ??0, _secilenTemrinId ??0], */
 List<TemrinNotModel> temrinNotList = [];
 List<OgrenciModel> sinifList = [];
-List<TextEditingController> _puanControllers = [];
-List<int> _puanlar = [];
-List<List<int>> _kriterler = [];
 
 class _TemrinnotPageViewState extends State<TemrinNotPageView> {
   @override
   void initState() {
     super.initState();
-    sinifListesiniGetir(widget.parametreler ?? []);
+    temrinListesiniGetir(widget.parametreler![2]);
   }
 
-  Future<void> sinifListesiniGetir(List<int> parametreler) async {
-    sinifList = await OgrenciDatabaseProvider().getFilterList(parametreler[0]);
-    temrinNotList = await TemrinNotDatabaseProvider()
-        .getFilterListParameter(parametreler[1], parametreler[2]);
+  @override
+  void dispose() {
+    sinifList = [];
+    super.dispose();
+  }
 
+  Future<void> sinifListesiniGetir(int sinifId) async {
+    sinifList = await OgrenciDatabaseProvider().getFilterList(sinifId);
     print(sinifList);
-    // DersModel tumuModel = DersModel(id: -1, dersAd: "Tüm Dersler");
-    // dersList.insert(0, tumuModel);
+  }
 
-    _puanControllers = [];
-    _puanlar = [];
-    _kriterler = [];
-
-    /*   for (var i = 0; i < temrinNotList.length; i++) {
-      _puanlar.add(0);
-      _kriterler.add([0, 0, 0, 0, 0]);
-      temrinNotList.map((e) {
-        if (e.ogrenciId == sinifList[i].id) {
-          _puanControllers[i].text =
-              e.puanBir == -1 ? 'G' : e.puanBir.toString();
-          //_aciklamaControllers[item.id].text = item.notlar;
-          //_kriterler[i] = e.puanBir;
-        } else {}
-      }).toList();
-    } */
+  Future<void> temrinListesiniGetir(int temrinId) async {
+    temrinNotList = await TemrinNotDatabaseProvider().getFilterList(temrinId);
+    print('temrinNotList');
+    print(temrinNotList);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        // drawer: buildDrawer(context),
         appBar: customAppBar(
           context: context,
           title: const Text('Temrinnotler'),
@@ -78,20 +64,53 @@ class _TemrinnotPageViewState extends State<TemrinNotPageView> {
                   child: Text("${widget.parametreler?[0].toString()}"),
                 ),
               ),
-              ListView.builder(
-                  shrinkWrap: true,
-                  padding: const EdgeInsets.all(6),
-                  itemCount: sinifList.length,
-                  itemBuilder: ((context, index) {
-                    return CustomOgrenciCard(
-                      transaction: sinifList[index],
-                      index: index,
-                      //puanController: _puanControllers[index],
-                      temrinId: widget.parametreler![2],
-                    );
-                  })),
+              Expanded(
+                  child: FutureBuilder(
+                future: OgrenciDatabaseProvider().getFilterList(widget.parametreler![0]),
+                builder: (BuildContext context, AsyncSnapshot<List<OgrenciModel>> snapshot) {
+                  if (snapshot.hasData) {
+                    sinifList = snapshot.data!;
+                    TemrinNotModel? temrinNotModel = temrinNotList.firstWhere(
+                        ((element) => element.temrinId == widget.parametreler![2]),
+                        orElse: () => TemrinNotModel(id: -1));
+
+                    /*
+                    
+                      SinifModel? sItem = tSinif.firstWhere(
+                  (element) => element.id == int.tryParse(selectedItem));
+                    */
+                    return _buildOgrenciListesi(context, temrinNotModel);
+                  } else {
+                    return const Text("Datayok");
+                  }
+                },
+              ))
             ],
           ),
         ));
+  }
+
+  _buildOgrenciListesi(BuildContext context, TemrinNotModel? temrinNotModel) {
+    return ListView.builder(
+        shrinkWrap: true,
+        padding: const EdgeInsets.all(6),
+        itemCount: sinifList.length,
+        itemBuilder: ((context, index) {
+          return CustomOgrenciCard(
+            transaction: sinifList[index],
+            index: index,
+            //puanController: _puanControllers[index],
+            puan: temrinNotModel!.id == -1
+                ? ""
+                : ((temrinNotModel.puanBir! +
+                            temrinNotModel.puanIki! +
+                            temrinNotModel.puanUc! +
+                            temrinNotModel.puanDort! +
+                            temrinNotModel.puanBes!) /
+                        5)
+                    .toString(),
+            temrinId: widget.parametreler![2],
+          );
+        }));
   }
 }
