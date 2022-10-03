@@ -5,10 +5,10 @@ class CustomOgrenciCard extends StatefulWidget {
   final OgrenciModel transaction;
   final int index;
   final int temrinId;
+  //final TextEditingController? puanController;
 
-  final TextEditingController? puanController;
-  final List<int>? parametreler;
-  final List<int>? kriterler;
+//  final List<int>? parametreler;
+//  final List<int>? kriterler;
 
   //final TemrinnotModel? temrinnotModel;
 
@@ -16,10 +16,8 @@ class CustomOgrenciCard extends StatefulWidget {
     Key? key,
     required this.transaction,
     required this.index,
-    required this.puanController,
+    //required this.puanController,
     required this.temrinId,
-    required this.parametreler,
-    required this.kriterler,
 
     // required this.temrinnotModel,
   }) : super(key: key);
@@ -48,15 +46,19 @@ class _CustomOgrenciCardState extends State<CustomOgrenciCard> {
                   Expanded(
                     flex: 10,
                     child: Text(
-                      (widget.index + 1).toString() + " - " + widget.transaction.ogrenciAdSoyad.toString(),
+                      (widget.index + 1).toString() +
+                          " - " +
+                          widget.transaction.ogrenciAdSoyad.toString(),
                       maxLines: 2,
-                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                      style: const TextStyle(
+                          fontWeight: FontWeight.bold, fontSize: 16),
                     ),
                   ),
                   Expanded(
                       flex: 3,
                       child: CircleAvatar(
-                        child: Text(widget.puanController!.text),
+                        //child: Text(widget.puanController!.text),
+                        child: Text("Y"),
                       )
 
                       /* TextFormField(
@@ -92,7 +94,8 @@ class _CustomOgrenciCardState extends State<CustomOgrenciCard> {
                  
                 }); */
               },
-              subtitle: Text("Nu: ${widget.transaction.ogrenciNu} Sınıf: ${widget.transaction.sinifId}"),
+              subtitle: Text(
+                  "Nu: ${widget.transaction.ogrenciNu} Sınıf: ${widget.transaction.sinifId}"),
             ),
           ),
           /*   Expanded(
