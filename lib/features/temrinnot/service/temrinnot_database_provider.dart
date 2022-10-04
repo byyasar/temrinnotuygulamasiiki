@@ -8,6 +8,7 @@ class TemrinNotDatabaseProvider extends DatabaseProvider<TemrinNotModel> {
   final int _version = 1;
   Database? _database;
   List<TemrinNotModel> _temrinMaps = [];
+  TemrinNotModel _temrinNotModel = TemrinNotModel();
 
   String columnId = "id";
   String columnTemrinId = "temrinId";
@@ -32,10 +33,9 @@ class TemrinNotDatabaseProvider extends DatabaseProvider<TemrinNotModel> {
     _database ??= await open();
     var userMaps = await _database!.query(_temrinTableName, where: '$columnId = ?', whereArgs: [id]);
     if (userMaps.isNotEmpty) {
-      return TemrinNotModel().fromJson(userMaps.first);
-    } else {
-      throw UnimplementedError();
+      _temrinNotModel = TemrinNotModel().fromJson(userMaps.first);
     }
+    return _temrinNotModel;
   }
 
   @override
@@ -45,10 +45,8 @@ class TemrinNotDatabaseProvider extends DatabaseProvider<TemrinNotModel> {
 
     if (sonuc.isNotEmpty) {
       _temrinMaps = sonuc.map((e) => TemrinNotModel().fromJson(e)).toList();
-      return _temrinMaps;
-    } else {
-      return _temrinMaps;
     }
+    return _temrinMaps;
   }
 
   @override

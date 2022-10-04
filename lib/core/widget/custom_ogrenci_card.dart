@@ -1,19 +1,15 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
-
+import 'package:temrinnotuygulamasiiki/core/widget/custom_kriternot_dialog.dart';
 import 'package:temrinnotuygulamasiiki/features/ogrenci/model/ogrenci_model.dart';
+import 'package:temrinnotuygulamasiiki/features/temrinnot/model/temrinnot_model.dart';
+import 'package:temrinnotuygulamasiiki/features/temrinnot/service/temrinnot_database_provider.dart';
 
 class CustomOgrenciCard extends StatefulWidget {
   final OgrenciModel transaction;
   final int index;
   final int temrinId;
   final String? puan;
-  //final TextEditingController? puanController;
-
-//  final List<int>? parametreler;
-//  final List<int>? kriterler;
-
-  //final TemrinnotModel? temrinnotModel;
 
   const CustomOgrenciCard(
       {Key? key,
@@ -65,27 +61,54 @@ class _CustomOgrenciCardState extends State<CustomOgrenciCard> {
                       ),
                 ],
               ),
-              onLongPress: () {
+              onLongPress: () async {
                 debugPrint('uzun basıldı ${widget.transaction.ogrenciAdSoyad}');
-                // _viewModelOgrenci.setFiltreOgrenciId(widget.transaction.id);
-                // _viewModelTemrin.setFiltretemrinId(widget.temrinId);
-                /*   showDialog(
-                    context: context,
-                    builder: (context) => CustomKriterDialog(
-                          //onClickedDone: addTransaction,
-                          ogrenciId: widget.transaction.id,
-                          parametreler: widget.parametreler,
-                          kriterler: widget.kriterler,
-                          index:widget.index,
-                          
-                        )).then((value) {
-                 if (value!=null) {
-                    setState(() {
-                    widget.puanController!.text =value.puan==-1?'G': value.puan.toString();
+                TemrinNotModel? temrinNotModel = (await TemrinNotDatabaseProvider().getItem(widget.temrinId));
+                if (temrinNotModel.id != null) {
+                  showDialog(
+                      context: context,
+                      builder: (context) => CustomKriterDialog(
+                            //onClickedDone: addTransaction,
+                            ogrenciId: widget.transaction.id,
+
+                            kriterler: [
+                              temrinNotModel.puanBir ?? 0,
+                              temrinNotModel.puanIki ?? 0,
+                              temrinNotModel.puanUc ?? 0,
+                              temrinNotModel.puanDort ?? 0,
+                              temrinNotModel.puanBes ?? 0
+                            ],
+                            index: widget.index,
+                          )).then((value) {
+                    if (value != null) {
+                      setState(() {
+                        // widget.puanController!.text = value.puan == -1 ? 'G' : value.puan.toString();
+                      });
+                    }
                   });
-                 } 
-                 
-                }); */
+                } else {
+                  showDialog(
+                      context: context,
+                      builder: (context) => CustomKriterDialog(
+                            //onClickedDone: addTransaction,
+                            ogrenciId: widget.transaction.id,
+
+                            kriterler: [
+                              temrinNotModel.puanBir ?? 0,
+                              temrinNotModel.puanIki ?? 0,
+                              temrinNotModel.puanUc ?? 0,
+                              temrinNotModel.puanDort ?? 0,
+                              temrinNotModel.puanBes ?? 0
+                            ],
+                            index: widget.index,
+                          )).then((value) {
+                    if (value != null) {
+                      setState(() {
+                        // widget.puanController!.text = value.puan == -1 ? 'G' : value.puan.toString();
+                      });
+                    }
+                  });
+                }
               },
               subtitle: Text("Nu: ${widget.transaction.ogrenciNu} Sınıf: ${widget.transaction.sinifId}"),
             ),
