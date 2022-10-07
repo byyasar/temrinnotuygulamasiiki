@@ -4,9 +4,10 @@ import 'package:temrinnotuygulamasiiki/core/base/base_state.dart';
 import 'package:temrinnotuygulamasiiki/core/widget/cancel_button.dart';
 import 'package:temrinnotuygulamasiiki/core/widget/custom_menu_button.dart';
 import 'package:temrinnotuygulamasiiki/features/temrinnot/model/temrinnot_model.dart';
+import 'package:temrinnotuygulamasiiki/features/temrinnot/service/temrinnot_database_provider.dart';
 
 class CustomKriterDialog extends StatefulWidget {
-  final TemrinNotModel? transaction;
+  final TemrinNotModel transaction;
   final int? ogrenciId;
   final int? index;
   //final List<int>? parametreler;
@@ -16,7 +17,7 @@ class CustomKriterDialog extends StatefulWidget {
 
   const CustomKriterDialog({
     Key? key,
-    this.transaction,
+    required this.transaction,
     // required this.onClickedDone,
     required this.ogrenciId,
     // required this.parametreler,
@@ -31,6 +32,7 @@ class CustomKriterDialog extends StatefulWidget {
 class _CustomKriterDialogState extends BaseState<CustomKriterDialog> {
   final formKey = GlobalKey<FormState>();
   //late TemrinnotStore viewModel;
+  final TemrinNotModel viewModel = TemrinNotModel();
 
   final _aciklamaController = TextEditingController();
   final _kriter1Controller = TextEditingController();
@@ -251,7 +253,31 @@ class _CustomKriterDialogState extends BaseState<CustomKriterDialog> {
     //_viewModel.setKriterler(widget.kriterler!);
   }
 
-  void _buildOkButtononPressed(bool geldi) {
+  Future<void> _buildOkButtononPressed(bool geldi) async {
+    viewModel.aciklama = _aciklamaController.text;
+    viewModel.ogrenciId = widget.ogrenciId;
+    viewModel.temrinId = widget.transaction.temrinId;
+    viewModel.notTarih = "";
+    viewModel.id = widget.transaction.id;
+
+    if (geldi) {
+      viewModel.puanBir = int.tryParse(_kriter1Controller.text);
+      viewModel.puanIki = int.tryParse(_kriter2Controller.text);
+      viewModel.puanUc = int.tryParse(_kriter3Controller.text);
+      viewModel.puanDort = int.tryParse(_kriter4Controller.text);
+      viewModel.puanBes = int.tryParse(_kriter5Controller.text);
+    } else {
+      viewModel.puanBir = -1;
+      viewModel.puanIki = -1;
+      viewModel.puanUc = -1;
+      viewModel.puanDort = -1;
+      viewModel.puanBes = -1;
+    }
+    if (viewModel.id == null) {
+      await TemrinNotDatabaseProvider().insertItem(viewModel);
+    } else {
+      await TemrinNotDatabaseProvider().updateItem(viewModel.id!, viewModel);
+    }
     /*  String key =
         "${widget.parametreler![0]}-${widget.parametreler![1]}-${widget.parametreler![2]}-${widget.ogrenciId!}";
     if (geldi) {

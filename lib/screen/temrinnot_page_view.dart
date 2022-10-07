@@ -35,13 +35,16 @@ class _TemrinnotPageViewState extends State<TemrinNotPageView> {
 
   Future<void> sinifListesiniGetir(int sinifId) async {
     sinifList = await OgrenciDatabaseProvider().getFilterList(sinifId);
+    print('sinifList');
     print(sinifList);
   }
 
   Future<void> temrinListesiniGetir(int temrinId) async {
+    //temrinNotList = await TemrinNotDatabaseProvider().getList();
     temrinNotList = await TemrinNotDatabaseProvider().getFilterList(temrinId);
     print('temrinNotList');
-    print(temrinNotList);
+    print('${temrinNotList.length}');
+    //print(        "${temrinNotList.first.id}  ${temrinNotList.first.ogrenciId}   ${temrinNotList.first.puanBir} ${temrinNotList.first.puanIki}");
   }
 
   @override
@@ -66,20 +69,29 @@ class _TemrinnotPageViewState extends State<TemrinNotPageView> {
               ),
               Expanded(
                   child: FutureBuilder(
-                future: OgrenciDatabaseProvider().getFilterList(widget.parametreler![0]),
-                builder: (BuildContext context, AsyncSnapshot<List<OgrenciModel>> snapshot) {
+                future: OgrenciDatabaseProvider()
+                    .getFilterList(widget.parametreler![0]),
+                builder: (BuildContext context,
+                    AsyncSnapshot<List<OgrenciModel>> snapshot) {
                   if (snapshot.hasData) {
                     sinifList = snapshot.data!;
-                    TemrinNotModel? temrinNotModel = temrinNotList.firstWhere(
-                        ((element) => element.temrinId == widget.parametreler![2]),
-                        orElse: () => TemrinNotModel(id: -1));
+                    List<TemrinNotModel>? temrinNotModels = temrinNotList
+                        .where(
+                          ((element) =>
+                              element.temrinId == widget.parametreler![2]),
+                        )
+                        .toList();
 
                     /*
                     
                       SinifModel? sItem = tSinif.firstWhere(
                   (element) => element.id == int.tryParse(selectedItem));
+
+
+
                     */
-                    return _buildOgrenciListesi(context, temrinNotModel);
+
+                    return _buildOgrenciListesi(context, temrinNotModels);
                   } else {
                     return const Text("Datayok");
                   }
@@ -90,24 +102,27 @@ class _TemrinnotPageViewState extends State<TemrinNotPageView> {
         ));
   }
 
-  _buildOgrenciListesi(BuildContext context, TemrinNotModel? temrinNotModel) {
+  _buildOgrenciListesi(
+      BuildContext context, List<TemrinNotModel>? temrinNotModels) {
     return ListView.builder(
         shrinkWrap: true,
         padding: const EdgeInsets.all(6),
         itemCount: sinifList.length,
         itemBuilder: ((context, index) {
+          TemrinNotModel temrinNotModel = temrinNotModels!.firstWhere(
+              (element) => element.ogrenciId == sinifList[index].ogrenciNu,
+              orElse: () => TemrinNotModel(id: -1));
           return CustomOgrenciCard(
             transaction: sinifList[index],
             index: index,
             //puanController: _puanControllers[index],
-            puan: temrinNotModel!.id == -1
+            puan: temrinNotModel.id == -1
                 ? ""
-                : ((temrinNotModel.puanBir! +
-                            temrinNotModel.puanIki! +
-                            temrinNotModel.puanUc! +
-                            temrinNotModel.puanDort! +
-                            temrinNotModel.puanBes!) /
-                        5)
+                : (temrinNotModel.puanBir! +
+                        temrinNotModel.puanIki! +
+                        temrinNotModel.puanUc! +
+                        temrinNotModel.puanDort! +
+                        temrinNotModel.puanBes!)
                     .toString(),
             temrinId: widget.parametreler![2],
           );

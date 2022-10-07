@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:temrinnotuygulamasiiki/constans/database_constans.dart';
-import 'package:temrinnotuygulamasiiki/features/ogrenci/model/ogrenci_model.dart';
 
 //ikinci commit test
 class DatabaseHelper {
@@ -77,7 +76,7 @@ class DatabaseHelper {
 
   Future<List> ogrenciListesiGetir() async {
     var db = await _getDatabase();
-    OgrenciModel ogrenciModel = OgrenciModel();
+   // OgrenciModel ogrenciModel = OgrenciModel();
     List ogrenciMaps = await db.rawQuery('select * from tblOgrenci');
     print(ogrenciMaps);
     return ogrenciMaps;

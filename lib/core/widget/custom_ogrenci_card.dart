@@ -38,9 +38,12 @@ class _CustomOgrenciCardState extends State<CustomOgrenciCard> {
                   Expanded(
                     flex: 10,
                     child: Text(
-                      (widget.index + 1).toString() + " - " + widget.transaction.ogrenciAdSoyad.toString(),
+                      (widget.index + 1).toString() +
+                          " - " +
+                          widget.transaction.ogrenciAdSoyad.toString(),
                       maxLines: 2,
-                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                      style: const TextStyle(
+                          fontWeight: FontWeight.bold, fontSize: 16),
                     ),
                   ),
                   Expanded(
@@ -63,13 +66,23 @@ class _CustomOgrenciCardState extends State<CustomOgrenciCard> {
               ),
               onLongPress: () async {
                 debugPrint('uzun basıldı ${widget.transaction.ogrenciAdSoyad}');
-                TemrinNotModel? temrinNotModel = (await TemrinNotDatabaseProvider().getItem(widget.temrinId));
+                debugPrint('uzun basıldı ${widget.transaction.ogrenciNu}');
+
+                //TODO: TEMRİN NOT MODEL ID GETİRMEK İÇİN TEMRİNID VE ÖĞRENCİID SORGUSU OLACAK
+                TemrinNotModel? temrinNotModel =
+                    (await TemrinNotDatabaseProvider().getFilterItemParameter(
+                        widget.transaction.ogrenciNu ?? -1, widget.temrinId));
+                // .getItem(widget.temrinId));
+                temrinNotModel.temrinId = widget.temrinId;
+
                 if (temrinNotModel.id != null) {
                   showDialog(
                       context: context,
                       builder: (context) => CustomKriterDialog(
+                            transaction: temrinNotModel,
+
                             //onClickedDone: addTransaction,
-                            ogrenciId: widget.transaction.id,
+                            ogrenciId: widget.transaction.ogrenciNu,
 
                             kriterler: [
                               temrinNotModel.puanBir ?? 0,
@@ -92,7 +105,7 @@ class _CustomOgrenciCardState extends State<CustomOgrenciCard> {
                       builder: (context) => CustomKriterDialog(
                             //onClickedDone: addTransaction,
                             ogrenciId: widget.transaction.id,
-
+                            transaction: temrinNotModel,
                             kriterler: [
                               temrinNotModel.puanBir ?? 0,
                               temrinNotModel.puanIki ?? 0,
@@ -110,7 +123,8 @@ class _CustomOgrenciCardState extends State<CustomOgrenciCard> {
                   });
                 }
               },
-              subtitle: Text("Nu: ${widget.transaction.ogrenciNu} Sınıf: ${widget.transaction.sinifId}"),
+              subtitle: Text(
+                  "Nu: ${widget.transaction.ogrenciNu} Sınıf: ${widget.transaction.sinifId}"),
             ),
           ),
           /*   Expanded(
