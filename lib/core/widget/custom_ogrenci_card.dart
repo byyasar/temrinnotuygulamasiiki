@@ -38,18 +38,15 @@ class _CustomOgrenciCardState extends State<CustomOgrenciCard> {
                   Expanded(
                     flex: 10,
                     child: Text(
-                      (widget.index + 1).toString() +
-                          " - " +
-                          widget.transaction.ogrenciAdSoyad.toString(),
+                      (widget.index + 1).toString() + " - " + widget.transaction.ogrenciAdSoyad.toString(),
                       maxLines: 2,
-                      style: const TextStyle(
-                          fontWeight: FontWeight.bold, fontSize: 16),
+                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                     ),
                   ),
                   Expanded(
                       flex: 3,
                       child: CircleAvatar(
-                        child: Text(widget.puan!.toString()),
+                        child: int.tryParse(widget.puan!)! < 0 ? Text('G') : Text(widget.puan!.toString()),
                         // child: Text("Y"),
                       )
 
@@ -68,10 +65,8 @@ class _CustomOgrenciCardState extends State<CustomOgrenciCard> {
                 debugPrint('uzun basıldı ${widget.transaction.ogrenciAdSoyad}');
                 debugPrint('uzun basıldı ${widget.transaction.ogrenciNu}');
 
-                //TODO: TEMRİN NOT MODEL ID GETİRMEK İÇİN TEMRİNID VE ÖĞRENCİID SORGUSU OLACAK
-                TemrinNotModel? temrinNotModel =
-                    (await TemrinNotDatabaseProvider().getFilterItemParameter(
-                        widget.transaction.ogrenciNu ?? -1, widget.temrinId));
+                TemrinNotModel? temrinNotModel = (await TemrinNotDatabaseProvider()
+                    .getFilterItemParameter(widget.transaction.id ?? -1, widget.temrinId));
                 // .getItem(widget.temrinId));
                 temrinNotModel.temrinId = widget.temrinId;
 
@@ -82,7 +77,7 @@ class _CustomOgrenciCardState extends State<CustomOgrenciCard> {
                             transaction: temrinNotModel,
 
                             //onClickedDone: addTransaction,
-                            ogrenciId: widget.transaction.ogrenciNu,
+                            ogrenciId: widget.transaction.id,
 
                             kriterler: [
                               temrinNotModel.puanBir ?? 0,
@@ -117,26 +112,16 @@ class _CustomOgrenciCardState extends State<CustomOgrenciCard> {
                           )).then((value) {
                     if (value != null) {
                       setState(() {
+                        print('Gelmedi tıklandı');
                         // widget.puanController!.text = value.puan == -1 ? 'G' : value.puan.toString();
                       });
                     }
                   });
                 }
               },
-              subtitle: Text(
-                  "Nu: ${widget.transaction.ogrenciNu} Sınıf: ${widget.transaction.sinifId}"),
+              subtitle: Text("Nu: ${widget.transaction.ogrenciNu} Sınıf: ${widget.transaction.sinifId}"),
             ),
           ),
-          /*   Expanded(
-            flex: 1,
-            child: IconButton(
-                onPressed: () {
-                  setState(() {
-                    widget.puanController!.text = "G";
-                  });
-                },
-                icon: IconsConstans.gelmediIcon),
-          ), */
         ],
       ),
     );

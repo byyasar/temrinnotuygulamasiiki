@@ -45,23 +45,17 @@ class _CustomKriterDialogState extends BaseState<CustomKriterDialog> {
   @override
   void initState() {
     super.initState();
-    _aciklamaController.text =
-        _getTransactionAciklama().isEmpty ? '' : _getTransactionAciklama();
+    _aciklamaController.text = _getTransactionAciklama().isEmpty ? '' : _getTransactionAciklama();
     _kriter1Controller.text = widget.kriterler![0].toString();
     _kriter2Controller.text = widget.kriterler![1].toString();
     _kriter3Controller.text = widget.kriterler![2].toString();
     _kriter4Controller.text = widget.kriterler![3].toString();
     _kriter5Controller.text = widget.kriterler![4].toString();
-    _toplam = int.tryParse(
-            _kriter1Controller.text.isEmpty ? '0' : _kriter1Controller.text)! +
-        int.tryParse(
-            _kriter2Controller.text.isEmpty ? '0' : _kriter2Controller.text)! +
-        int.tryParse(
-            _kriter3Controller.text.isEmpty ? '0' : _kriter3Controller.text)! +
-        int.tryParse(
-            _kriter4Controller.text.isEmpty ? '0' : _kriter4Controller.text)! +
-        int.tryParse(
-            _kriter5Controller.text.isEmpty ? '0' : _kriter5Controller.text)!;
+    _toplam = int.tryParse(_kriter1Controller.text.isEmpty ? '0' : _kriter1Controller.text)! +
+        int.tryParse(_kriter2Controller.text.isEmpty ? '0' : _kriter2Controller.text)! +
+        int.tryParse(_kriter3Controller.text.isEmpty ? '0' : _kriter3Controller.text)! +
+        int.tryParse(_kriter4Controller.text.isEmpty ? '0' : _kriter4Controller.text)! +
+        int.tryParse(_kriter5Controller.text.isEmpty ? '0' : _kriter5Controller.text)!;
     ////_viewModel.setKriterler(widget.kriterler!);
   }
 
@@ -81,9 +75,9 @@ class _CustomKriterDialogState extends BaseState<CustomKriterDialog> {
             //mainAxisAlignment: MainAxisAlignment.center,
             children: [
               myCustomMenuButton(context, () {
+                toplamHesapla();
                 _buildAllOkButtononPressed;
-              }, const Text('Tam'), IconsConstans.fullokIcon,
-                  Colors.blueAccent),
+              }, const Text('Tam'), IconsConstans.fullokIcon, Colors.blueAccent),
               const SizedBox(width: 10),
               myCustomMenuButton(context, () {
                 _buildOkButtononPressed(false);
@@ -105,21 +99,21 @@ class _CustomKriterDialogState extends BaseState<CustomKriterDialog> {
                         }), */
 
                       //"buildTemrin(context, transactionsTemrin),
+
+                      Text('TOPLAM =${_toplam < 0 ? 'G' : _toplam}'),
                       TextFormField(
                         style: const TextStyle(fontSize: 24),
                         decoration: const InputDecoration(
-                            labelText: '1-Bilgi -20P',
-                            focusColor: Colors.blue,
-                            labelStyle: TextStyle(fontSize: 18)),
+                            labelText: '1-Bilgi -20P', focusColor: Colors.blue, labelStyle: TextStyle(fontSize: 18)),
                         controller: _kriter1Controller,
                         keyboardType: TextInputType.number,
                         textAlign: TextAlign.center,
                         onChanged: (value) {
                           int puan = int.tryParse(value.isEmpty ? '0' : value)!;
                           if (puan >= 0 && puan <= 20) {
-                            widget.kriterler![0] =
-                                int.tryParse(value.isEmpty ? '0' : value)!;
+                            widget.kriterler![0] = int.tryParse(value.isEmpty ? '0' : value)!;
                             //_viewModel.setKriterler(widget.kriterler!);
+                            toplamHesapla();
                           } else {
                             _kriter1Controller.text = '';
                           }
@@ -137,8 +131,8 @@ class _CustomKriterDialogState extends BaseState<CustomKriterDialog> {
                         onChanged: (value) {
                           int puan = int.tryParse(value.isEmpty ? '0' : value)!;
                           if (puan >= 0 && puan <= 30) {
-                            widget.kriterler![1] =
-                                int.tryParse(value.isEmpty ? '0' : value)!;
+                            widget.kriterler![1] = int.tryParse(value.isEmpty ? '0' : value)!;
+                            toplamHesapla();
                             //_viewModel.setKriterler(widget.kriterler!);
                           } else {
                             _kriter2Controller.text = '';
@@ -157,8 +151,8 @@ class _CustomKriterDialogState extends BaseState<CustomKriterDialog> {
                         onChanged: (value) {
                           int puan = int.tryParse(value.isEmpty ? '0' : value)!;
                           if (puan >= 0 && puan <= 30) {
-                            widget.kriterler![2] =
-                                int.tryParse(value.isEmpty ? '0' : value)!;
+                            widget.kriterler![2] = int.tryParse(value.isEmpty ? '0' : value)!;
+                            toplamHesapla();
                             //_viewModel.setKriterler(widget.kriterler!);
                           } else {
                             _kriter3Controller.text = '';
@@ -168,17 +162,15 @@ class _CustomKriterDialogState extends BaseState<CustomKriterDialog> {
                       TextFormField(
                         style: const TextStyle(fontSize: 24),
                         decoration: const InputDecoration(
-                            labelText: '4-Tasarım -10P',
-                            focusColor: Colors.blue,
-                            labelStyle: TextStyle(fontSize: 18)),
+                            labelText: '4-Tasarım -10P', focusColor: Colors.blue, labelStyle: TextStyle(fontSize: 18)),
                         controller: _kriter4Controller,
                         keyboardType: TextInputType.number,
                         textAlign: TextAlign.center,
                         onChanged: (value) {
                           int puan = int.tryParse(value.isEmpty ? '0' : value)!;
                           if (puan >= 0 && puan <= 10) {
-                            widget.kriterler![3] =
-                                int.tryParse(value.isEmpty ? '0' : value)!;
+                            widget.kriterler![3] = int.tryParse(value.isEmpty ? '0' : value)!;
+                            toplamHesapla();
                             //_viewModel.setKriterler(widget.kriterler!);
                           } else {
                             _kriter4Controller.text = '';
@@ -188,17 +180,15 @@ class _CustomKriterDialogState extends BaseState<CustomKriterDialog> {
                       TextFormField(
                         style: const TextStyle(fontSize: 24),
                         decoration: const InputDecoration(
-                            labelText: '5-Süre -10P',
-                            focusColor: Colors.blue,
-                            labelStyle: TextStyle(fontSize: 18)),
+                            labelText: '5-Süre -10P', focusColor: Colors.blue, labelStyle: TextStyle(fontSize: 18)),
                         controller: _kriter5Controller,
                         keyboardType: TextInputType.number,
                         textAlign: TextAlign.center,
                         onChanged: (value) {
                           int puan = int.tryParse(value.isEmpty ? '0' : value)!;
                           if (puan >= 0 && puan <= 10) {
-                            widget.kriterler![4] =
-                                int.tryParse(value.isEmpty ? '0' : value)!;
+                            widget.kriterler![4] = int.tryParse(value.isEmpty ? '0' : value)!;
+                            toplamHesapla();
                             //_viewModel.setKriterler(widget.kriterler!);
                           } else {
                             _kriter5Controller.text = '';
@@ -207,11 +197,11 @@ class _CustomKriterDialogState extends BaseState<CustomKriterDialog> {
                       ),
 
                       TextFormField(
-                        decoration: const InputDecoration(
-                            labelText: 'Açıklama', focusColor: Colors.blue),
+                        decoration: const InputDecoration(labelText: 'Açıklama', focusColor: Colors.blue),
                         controller: _aciklamaController,
                         onChanged: (value) {
                           //_viewModel.setAciklama(value);
+                          viewModel.aciklama = value;
                         },
                       ),
                     ],
@@ -238,6 +228,16 @@ class _CustomKriterDialogState extends BaseState<CustomKriterDialog> {
     );
   }
 
+  void toplamHesapla() {
+    setState(() {
+      _toplam = (_kriter1Controller.text.isEmpty ? 0 : int.tryParse(_kriter1Controller.text)!) +
+          (_kriter2Controller.text.isEmpty ? 0 : int.tryParse(_kriter2Controller.text)!) +
+          (_kriter3Controller.text.isEmpty ? 0 : int.tryParse(_kriter3Controller.text)!) +
+          (_kriter4Controller.text.isEmpty ? 0 : int.tryParse(_kriter4Controller.text)!) +
+          (_kriter5Controller.text.isEmpty ? 0 : int.tryParse(_kriter5Controller.text)!);
+    });
+  }
+
   void get _buildAllOkButtononPressed {
     _kriter1Controller.text = '20';
     _kriter2Controller.text = '30';
@@ -245,12 +245,13 @@ class _CustomKriterDialogState extends BaseState<CustomKriterDialog> {
     _kriter4Controller.text = '10';
     _kriter5Controller.text = '10';
     _aciklamaController.text = '';
-    widget.kriterler![0] = 20;
+    /*  widget.kriterler![0] = 20;
     widget.kriterler![1] = 30;
     widget.kriterler![2] = 30;
     widget.kriterler![3] = 10;
-    widget.kriterler![4] = 10;
+    widget.kriterler![4] = 10; */
     //_viewModel.setKriterler(widget.kriterler!);
+    toplamHesapla;
   }
 
   Future<void> _buildOkButtononPressed(bool geldi) async {

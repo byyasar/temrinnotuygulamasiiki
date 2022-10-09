@@ -69,16 +69,13 @@ class _TemrinnotPageViewState extends State<TemrinNotPageView> {
               ),
               Expanded(
                   child: FutureBuilder(
-                future: OgrenciDatabaseProvider()
-                    .getFilterList(widget.parametreler![0]),
-                builder: (BuildContext context,
-                    AsyncSnapshot<List<OgrenciModel>> snapshot) {
+                future: OgrenciDatabaseProvider().getFilterList(widget.parametreler![0]),
+                builder: (BuildContext context, AsyncSnapshot<List<OgrenciModel>> snapshot) {
                   if (snapshot.hasData) {
                     sinifList = snapshot.data!;
                     List<TemrinNotModel>? temrinNotModels = temrinNotList
                         .where(
-                          ((element) =>
-                              element.temrinId == widget.parametreler![2]),
+                          ((element) => element.temrinId == widget.parametreler![2]),
                         )
                         .toList();
 
@@ -102,16 +99,14 @@ class _TemrinnotPageViewState extends State<TemrinNotPageView> {
         ));
   }
 
-  _buildOgrenciListesi(
-      BuildContext context, List<TemrinNotModel>? temrinNotModels) {
+  _buildOgrenciListesi(BuildContext context, List<TemrinNotModel>? temrinNotModels) {
     return ListView.builder(
         shrinkWrap: true,
         padding: const EdgeInsets.all(6),
         itemCount: sinifList.length,
         itemBuilder: ((context, index) {
-          TemrinNotModel temrinNotModel = temrinNotModels!.firstWhere(
-              (element) => element.ogrenciId == sinifList[index].ogrenciNu,
-              orElse: () => TemrinNotModel(id: -1));
+          TemrinNotModel temrinNotModel = temrinNotModels!
+              .firstWhere((element) => element.ogrenciId == sinifList[index].id, orElse: () => TemrinNotModel(id: -1));
           return CustomOgrenciCard(
             transaction: sinifList[index],
             index: index,
