@@ -46,7 +46,11 @@ class _CustomOgrenciCardState extends State<CustomOgrenciCard> {
                   Expanded(
                       flex: 3,
                       child: CircleAvatar(
-                        child: int.tryParse(widget.puan!)! < 0 ? Text('G') : Text(widget.puan!.toString()),
+                        child: widget.puan!.isEmpty || widget.puan == null
+                            ? Text("")
+                            : int.tryParse(widget.puan!)! < 0
+                                ? Text('G')
+                                : Text(widget.puan!.toString()),
                         // child: Text("Y"),
                       )
 

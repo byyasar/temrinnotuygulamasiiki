@@ -45,7 +45,7 @@ class _CustomKriterDialogState extends BaseState<CustomKriterDialog> {
   @override
   void initState() {
     super.initState();
-    _aciklamaController.text = _getTransactionAciklama().isEmpty ? '' : _getTransactionAciklama();
+    _aciklamaController.text = widget.transaction.aciklama ?? "";
     _kriter1Controller.text = widget.kriterler![0].toString();
     _kriter2Controller.text = widget.kriterler![1].toString();
     _kriter3Controller.text = widget.kriterler![2].toString();
