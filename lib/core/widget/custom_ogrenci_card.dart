@@ -69,8 +69,8 @@ class _CustomOgrenciCardState extends State<CustomOgrenciCard> {
                 debugPrint('uzun basıldı ${widget.transaction.ogrenciAdSoyad}');
                 debugPrint('uzun basıldı ${widget.transaction.ogrenciNu}');
 
-                TemrinNotModel? temrinNotModel = (await TemrinNotDatabaseProvider()
-                    .getFilterItemParameter(widget.transaction.id ?? -1, widget.temrinId));
+                TemrinNotModel? temrinNotModel =
+                    (await TemrinNotDatabaseProvider().getFilterItemParameter(widget.transaction.id ?? -1, widget.temrinId));
                 // .getItem(widget.temrinId));
                 temrinNotModel.temrinId = widget.temrinId;
 

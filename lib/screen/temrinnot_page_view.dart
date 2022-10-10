@@ -1,9 +1,12 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:temrinnotuygulamasiiki/core/widget/custom_appbar.dart';
 import 'package:temrinnotuygulamasiiki/core/widget/custom_ogrenci_card.dart';
 import 'package:temrinnotuygulamasiiki/features/ogrenci/model/ogrenci_model.dart';
 import 'package:temrinnotuygulamasiiki/features/ogrenci/service/ogrenci_database_provider.dart';
+import 'package:temrinnotuygulamasiiki/features/temrinnot/cubit/temrinnot_cubit.dart';
+import 'package:temrinnotuygulamasiiki/features/temrinnot/cubit/temrinnot_state.dart';
 import 'package:temrinnotuygulamasiiki/features/temrinnot/model/temrinnot_model.dart';
 import 'package:temrinnotuygulamasiiki/features/temrinnot/service/temrinnot_database_provider.dart';
 
@@ -52,7 +55,7 @@ class _TemrinnotPageViewState extends State<TemrinNotPageView> {
     return Scaffold(
         appBar: customAppBar(
           context: context,
-          title: const Text('Temrinnotler'),
+          title: const Text('Temrinn Notlar'),
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
         body: Container(
@@ -68,31 +71,29 @@ class _TemrinnotPageViewState extends State<TemrinNotPageView> {
                 ),
               ),
               Expanded(
-                  child: FutureBuilder(
-                future: OgrenciDatabaseProvider().getFilterList(widget.parametreler![0]),
-                builder: (BuildContext context, AsyncSnapshot<List<OgrenciModel>> snapshot) {
-                  if (snapshot.hasData) {
-                    sinifList = snapshot.data!;
-                    List<TemrinNotModel>? temrinNotModels = temrinNotList
-                        .where(
-                          ((element) => element.temrinId == widget.parametreler![2]),
-                        )
-                        .toList();
+                  child: BlocProvider(
+                create: (context) => TemrinNotCubit(databaseProvider: TemrinNotDatabaseProvider()),
+                child: BlocBuilder<TemrinNotCubit, TemrinNotState>(
+                  builder: (context, state) {
+                    return FutureBuilder(
+                      future: OgrenciDatabaseProvider().getFilterList(widget.parametreler![0]),
+                      builder: (BuildContext context, AsyncSnapshot<List<OgrenciModel>> snapshot) {
+                        if (snapshot.hasData) {
+                          sinifList = snapshot.data!;
+                          List<TemrinNotModel>? temrinNotModels = temrinNotList
+                              .where(
+                                ((element) => element.temrinId == widget.parametreler![2]),
+                              )
+                              .toList();
 
-                    /*
-                    
-                      SinifModel? sItem = tSinif.firstWhere(
-                  (element) => element.id == int.tryParse(selectedItem));
-
-
-
-                    */
-
-                    return _buildOgrenciListesi(context, temrinNotModels);
-                  } else {
-                    return const Text("Datayok");
-                  }
-                },
+                          return _buildOgrenciListesi(context, temrinNotModels);
+                        } else {
+                          return const Text("Datayok");
+                        }
+                      },
+                    );
+                  },
+                ),
               ))
             ],
           ),
@@ -105,19 +106,19 @@ class _TemrinnotPageViewState extends State<TemrinNotPageView> {
         padding: const EdgeInsets.all(6),
         itemCount: sinifList.length,
         itemBuilder: ((context, index) {
-          TemrinNotModel temrinNotModel = temrinNotModels!
-              .firstWhere((element) => element.ogrenciId == sinifList[index].id, orElse: () => TemrinNotModel(id: -1));
+          TemrinNotModel temrinNotModel =
+              temrinNotModels!.firstWhere((element) => element.ogrenciId == sinifList[index].id, orElse: () => TemrinNotModel(id: -1));
           return CustomOgrenciCard(
             transaction: sinifList[index],
             index: index,
             //puanController: _puanControllers[index],
             puan: temrinNotModel.id == -1
                 ? ""
-                : (temrinNotModel.puanBir! +
-                        temrinNotModel.puanIki! +
-                        temrinNotModel.puanUc! +
-                        temrinNotModel.puanDort! +
-                        temrinNotModel.puanBes!)
+                : ((temrinNotModel.puanBir ?? 0) +
+                        (temrinNotModel.puanIki ?? 0) +
+                        (temrinNotModel.puanUc ?? 0) +
+                        (temrinNotModel.puanDort ?? 0) +
+                        (temrinNotModel.puanBes ?? 0))
                     .toString(),
             temrinId: widget.parametreler![2],
           );

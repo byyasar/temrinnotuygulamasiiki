@@ -3,5 +3,11 @@
     "sqltools.useNodeRuntime": true,
     "cmake.configureOnOpen": true,
     "markdown-todo.sortByCount": false,
-    "git.ignoreLimitWarning": true
+    "git.ignoreLimitWarning": true,
+    "dart.lineLength": 150,
+    "[dart]": {
+        "editor.rulers": [
+            150
+        ],
+    }
 }
