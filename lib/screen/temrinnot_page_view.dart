@@ -43,7 +43,7 @@ class _TemrinnotPageViewState extends State<TemrinNotPageView> {
   }
 
   Future<void> temrinListesiniGetir(int temrinId) async {
-    //temrinNotList = await TemrinNotDatabaseProvider().getList();
+    //  temrinNotList = await TemrinNotDatabaseProvider().getList();
     temrinNotList = await TemrinNotDatabaseProvider().getFilterList(temrinId);
     print('temrinNotList');
     print('${temrinNotList.length}');
@@ -52,28 +52,37 @@ class _TemrinnotPageViewState extends State<TemrinNotPageView> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: customAppBar(
-          context: context,
-          title: const Text('Temrinn Notlar'),
-        ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-        body: Container(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Container(
-                  height: 25,
-                  color: Colors.amber,
-                  child: Text("${widget.parametreler?[0].toString()}"),
+    return BlocProvider(
+      create: (context) => TemrinNotCubit(databaseProvider: TemrinNotDatabaseProvider()),
+      child: Scaffold(
+          appBar: customAppBar(
+            context: context,
+            title: const Text('Temrinn Notlar'),
+          ),
+          floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+          floatingActionButton: BlocBuilder<TemrinNotCubit, TemrinNotState>(
+            builder: (context, state) {
+              return FloatingActionButton(
+                onPressed: () async {
+                  temrinNotList = await context.read<TemrinNotCubit>().filtrelenmisTemrinNotleriGetir(widget.parametreler![2]);
+//print(state.temrinNotModel);
+                },
+              );
+            },
+          ),
+          body: Container(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Container(
+                    height: 25,
+                    color: Colors.amber,
+                    child: Text("${widget.parametreler?[0].toString()}"),
+                  ),
                 ),
-              ),
-              Expanded(
-                  child: BlocProvider(
-                create: (context) => TemrinNotCubit(databaseProvider: TemrinNotDatabaseProvider()),
-                child: BlocBuilder<TemrinNotCubit, TemrinNotState>(
+                Expanded(child: BlocBuilder<TemrinNotCubit, TemrinNotState>(
                   builder: (context, state) {
                     return FutureBuilder(
                       future: OgrenciDatabaseProvider().getFilterList(widget.parametreler![0]),
@@ -86,18 +95,24 @@ class _TemrinnotPageViewState extends State<TemrinNotPageView> {
                               )
                               .toList();
 
-                          return _buildOgrenciListesi(context, temrinNotModels);
+                          return BlocListener<TemrinNotCubit, TemrinNotState>(
+                            listener: (context, state) {
+                              print('State değişti');
+                              temrinListesiniGetir(widget.parametreler![2]);
+                            },
+                            child: _buildOgrenciListesi(context, temrinNotModels),
+                          );
                         } else {
                           return const Text("Datayok");
                         }
                       },
                     );
                   },
-                ),
-              ))
-            ],
-          ),
-        ));
+                ))
+              ],
+            ),
+          )),
+    );
   }
 
   _buildOgrenciListesi(BuildContext context, List<TemrinNotModel>? temrinNotModels) {

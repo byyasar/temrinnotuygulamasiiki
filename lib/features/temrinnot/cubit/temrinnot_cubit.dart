@@ -15,19 +15,17 @@ class TemrinNotCubit extends Cubit<TemrinNotState> {
   Future<void> temrinnotleriGetir() async {
     emit(state.copyWith(isLoading: true));
     final temrinnotList = await _databaseProvider.getList();
-    emit(state.copyWith(
-        temrinNotModel: temrinnotList, isLoading: false, isCompleted: true));
+    emit(state.copyWith(temrinNotModel: temrinnotList, isLoading: false, isCompleted: true));
   }
 
-  Future<void> filtrelenmisTemrinNotleriGetir(int dersId) async {
+  Future<List<TemrinNotModel>> filtrelenmisTemrinNotleriGetir(int dersId) async {
     emit(state.copyWith(isLoading: true));
     final temrinnotList = await _databaseProvider.getFilterList(dersId);
-    emit(state.copyWith(
-        temrinNotModel: temrinnotList, isLoading: false, isCompleted: true));
+    emit(state.copyWith(temrinNotModel: temrinnotList, isLoading: false, isCompleted: true));
+    return temrinnotList;
   }
 
-  Future<void> temrinnotKaydet(
-      {int? id, required TemrinNotModel temrinnotModel}) async {
+  Future<void> temrinnotKaydet({int? id, required TemrinNotModel temrinnotModel}) async {
     emit(state.copyWith(isLoading: true));
 
     if (id == null) {
@@ -36,15 +34,13 @@ class TemrinNotCubit extends Cubit<TemrinNotState> {
       await _databaseProvider.updateItem(id, temrinnotModel);
     }
     final temrinnotList = await _databaseProvider.getList();
-    emit(state.copyWith(
-        temrinNotModel: temrinnotList, isLoading: false, isCompleted: true));
+    emit(state.copyWith(temrinNotModel: temrinnotList, isLoading: false, isCompleted: true));
   }
 
   Future<void> temrinnotSil({required int id}) async {
     emit(state.copyWith(isLoading: true));
     await _databaseProvider.removeItem(id);
     final temrinnotList = await _databaseProvider.getList();
-    emit(state.copyWith(
-        temrinNotModel: temrinnotList, isLoading: false, isCompleted: true));
+    emit(state.copyWith(temrinNotModel: temrinnotList, isLoading: false, isCompleted: true));
   }
 }

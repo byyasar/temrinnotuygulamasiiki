@@ -18,7 +18,7 @@ class CustomKriterDialog extends StatefulWidget {
   const CustomKriterDialog({
     Key? key,
     required this.transaction,
-    // required this.onClickedDone,
+  //  required this.onClickedDone,
     required this.ogrenciId,
     // required this.parametreler,
     required this.kriterler,

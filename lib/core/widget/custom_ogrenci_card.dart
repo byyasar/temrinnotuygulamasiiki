@@ -1,7 +1,10 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:temrinnotuygulamasiiki/core/widget/custom_kriternot_dialog.dart';
 import 'package:temrinnotuygulamasiiki/features/ogrenci/model/ogrenci_model.dart';
+import 'package:temrinnotuygulamasiiki/features/temrinnot/cubit/temrinnot_cubit.dart';
+import 'package:temrinnotuygulamasiiki/features/temrinnot/cubit/temrinnot_state.dart';
 import 'package:temrinnotuygulamasiiki/features/temrinnot/model/temrinnot_model.dart';
 import 'package:temrinnotuygulamasiiki/features/temrinnot/service/temrinnot_database_provider.dart';
 
@@ -27,107 +30,69 @@ class CustomOgrenciCard extends StatefulWidget {
 class _CustomOgrenciCardState extends State<CustomOgrenciCard> {
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: Row(
-        children: [
-          Expanded(
-            flex: 9,
-            child: ListTile(
-              title: Row(
-                children: [
-                  Expanded(
-                    flex: 10,
-                    child: Text(
-                      (widget.index + 1).toString() + " - " + widget.transaction.ogrenciAdSoyad.toString(),
-                      maxLines: 2,
-                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                    ),
-                  ),
-                  Expanded(
-                      flex: 3,
-                      child: CircleAvatar(
-                        child: widget.puan!.isEmpty || widget.puan == null
-                            ? Text("")
-                            : int.tryParse(widget.puan!)! < 0
-                                ? Text('G')
-                                : Text(widget.puan!.toString()),
-                        // child: Text("Y"),
-                      )
-
-                      /* TextFormField(
-                        onTap: () => widget.puanController!.clear(),
-                        controller: widget.puanController,
-                        textAlign: TextAlign.center,
-                        maxLength: 3,
-                        keyboardType: TextInputType.number,
-                        style: const TextStyle(fontSize: 28),
-                      )*/
+    return BlocBuilder<TemrinNotCubit, TemrinNotState>(
+      builder: (context, state) {
+        return Card(
+          child: Row(
+            children: [
+              Expanded(
+                flex: 9,
+                child: ListTile(
+                  title: Row(
+                    children: [
+                      Expanded(
+                        flex: 10,
+                        child: Text(
+                          (widget.index + 1).toString() + " - " + widget.transaction.ogrenciAdSoyad.toString(),
+                          maxLines: 2,
+                          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                        ),
                       ),
-                ],
+                      Expanded(
+                          flex: 3,
+                          child: CircleAvatar(
+                            child: widget.puan!.isEmpty || widget.puan == null
+                                ? Text("")
+                                : int.tryParse(widget.puan!)! < 0
+                                    ? Text('G')
+                                    : Text(widget.puan!.toString()),
+                            // child: Text("Y"),
+                          )),
+                    ],
+                  ),
+                  onLongPress: () async {
+                    debugPrint('uzun basıldı ${widget.transaction.ogrenciAdSoyad}');
+                    debugPrint('uzun basıldı ${widget.transaction.ogrenciNu}');
+
+                    TemrinNotModel? temrinNotModel =
+                        (await TemrinNotDatabaseProvider().getFilterItemParameter(widget.transaction.id ?? -1, widget.temrinId));
+                    // .getItem(widget.temrinId));
+                    temrinNotModel.temrinId = widget.temrinId;
+
+                    showDialog(
+                        context: context,
+                        builder: (context) => CustomKriterDialog(
+                              transaction: temrinNotModel,
+                              ogrenciId: widget.transaction.id,
+                              kriterler: [
+                                temrinNotModel.puanBir ?? 0,
+                                temrinNotModel.puanIki ?? 0,
+                                temrinNotModel.puanUc ?? 0,
+                                temrinNotModel.puanDort ?? 0,
+                                temrinNotModel.puanBes ?? 0
+                              ],
+                              index: widget.index,
+                            )).then((value) {
+                      context.read<TemrinNotCubit>().temrinnotleriGetir();
+                    });
+                  },
+                  subtitle: Text("Nu: ${widget.transaction.ogrenciNu} Sınıf: ${widget.transaction.sinifId}"),
+                ),
               ),
-              onLongPress: () async {
-                debugPrint('uzun basıldı ${widget.transaction.ogrenciAdSoyad}');
-                debugPrint('uzun basıldı ${widget.transaction.ogrenciNu}');
-
-                TemrinNotModel? temrinNotModel =
-                    (await TemrinNotDatabaseProvider().getFilterItemParameter(widget.transaction.id ?? -1, widget.temrinId));
-                // .getItem(widget.temrinId));
-                temrinNotModel.temrinId = widget.temrinId;
-
-                if (temrinNotModel.id != null) {
-                  showDialog(
-                      context: context,
-                      builder: (context) => CustomKriterDialog(
-                            transaction: temrinNotModel,
-
-                            //onClickedDone: addTransaction,
-                            ogrenciId: widget.transaction.id,
-
-                            kriterler: [
-                              temrinNotModel.puanBir ?? 0,
-                              temrinNotModel.puanIki ?? 0,
-                              temrinNotModel.puanUc ?? 0,
-                              temrinNotModel.puanDort ?? 0,
-                              temrinNotModel.puanBes ?? 0
-                            ],
-                            index: widget.index,
-                          )).then((value) {
-                    if (value != null) {
-                      setState(() {
-                        // widget.puanController!.text = value.puan == -1 ? 'G' : value.puan.toString();
-                      });
-                    }
-                  });
-                } else {
-                  showDialog(
-                      context: context,
-                      builder: (context) => CustomKriterDialog(
-                            //onClickedDone: addTransaction,
-                            ogrenciId: widget.transaction.id,
-                            transaction: temrinNotModel,
-                            kriterler: [
-                              temrinNotModel.puanBir ?? 0,
-                              temrinNotModel.puanIki ?? 0,
-                              temrinNotModel.puanUc ?? 0,
-                              temrinNotModel.puanDort ?? 0,
-                              temrinNotModel.puanBes ?? 0
-                            ],
-                            index: widget.index,
-                          )).then((value) {
-                    if (value != null) {
-                      setState(() {
-                        print('Gelmedi tıklandı');
-                        // widget.puanController!.text = value.puan == -1 ? 'G' : value.puan.toString();
-                      });
-                    }
-                  });
-                }
-              },
-              subtitle: Text("Nu: ${widget.transaction.ogrenciNu} Sınıf: ${widget.transaction.sinifId}"),
-            ),
+            ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 }

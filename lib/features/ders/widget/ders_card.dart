@@ -36,8 +36,9 @@ class DersCard extends StatelessWidget {
   }
 
   String? sinifAdiniGetir(int? id) {
-    if (sinifList!.isNotEmpty) {
-      return sinifList!.firstWhere((element) => element.id == id).sinifAd ?? "";
+    if (sinifList!.isNotEmpty&&id!=null) {
+      var response= sinifList!.firstWhere((element) => element.id == id).sinifAd ?? "";
+      return response;
     }
     return null;
   }
