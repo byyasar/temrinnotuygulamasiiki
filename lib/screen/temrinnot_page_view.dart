@@ -60,16 +60,6 @@ class _TemrinnotPageViewState extends State<TemrinNotPageView> {
             title: const Text('Temrinn Notlar'),
           ),
           floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-          floatingActionButton: BlocBuilder<TemrinNotCubit, TemrinNotState>(
-            builder: (context, state) {
-              return FloatingActionButton(
-                onPressed: () async {
-                  temrinNotList = await context.read<TemrinNotCubit>().filtrelenmisTemrinNotleriGetir(widget.parametreler![2]);
-//print(state.temrinNotModel);
-                },
-              );
-            },
-          ),
           body: Container(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
