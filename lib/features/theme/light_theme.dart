@@ -17,19 +17,17 @@ class LighTheme {
           primary: Colors.green,
         )),
         appBarTheme: AppBarTheme(
-            titleTextStyle: const TextStyle().copyWith(fontSize: 25, color: Colors.black),
+            centerTitle: true,
+            titleTextStyle: const TextStyle().copyWith(fontSize: 22, color: _lightColor.mint),
             shadowColor: _lightColor.hotPink,
             color: _lightColor.hotPink,
             shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(bottom: Radius.circular(20)))),
         scaffoldBackgroundColor: _lightColor.hotPink.withOpacity(0.7),
         floatingActionButtonTheme: FloatingActionButtonThemeData(backgroundColor: _lightColor.hotPink),
-        buttonTheme: ButtonThemeData(
-            colorScheme: ColorScheme.light(onPrimary: Colors.purple, onSecondary: _lightColor.blueMenia)),
+        buttonTheme: ButtonThemeData(colorScheme: ColorScheme.light(onPrimary: Colors.purple, onSecondary: _lightColor.blueMenia)),
         colorScheme: const ColorScheme.light(),
-        checkboxTheme: CheckboxThemeData(
-            fillColor: MaterialStateProperty.all(Colors.green), side: const BorderSide(color: Colors.green)),
-        textTheme:
-            ThemeData.light().textTheme.copyWith(subtitle1: TextStyle(fontSize: 20, color: _lightColor._textColor)));
+        checkboxTheme: CheckboxThemeData(fillColor: MaterialStateProperty.all(Colors.green), side: const BorderSide(color: Colors.green)),
+        textTheme: ThemeData.light().textTheme.copyWith(subtitle1: TextStyle(fontSize: 20, color: _lightColor._textColor)));
   }
 }
 

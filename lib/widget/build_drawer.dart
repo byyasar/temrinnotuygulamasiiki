@@ -7,8 +7,9 @@ import 'package:temrinnotuygulamasiiki/screen/ders_page_view.dart';
 import 'package:temrinnotuygulamasiiki/screen/ogrenci_page_view.dart';
 import 'package:temrinnotuygulamasiiki/screen/sinif_page_view.dart';
 import 'package:temrinnotuygulamasiiki/screen/temrin_page_view.dart';
-import 'package:temrinnotuygulamasiiki/screen/temrinnot_page_view.dart';
+import 'package:temrinnotuygulamasiiki/screen/temrinnot_listeleme_page_view.dart';
 import 'package:temrinnotuygulamasiiki/screen/temrinnot_secim_view.dart';
+import 'package:temrinnotuygulamasiiki/screen/verilericek_paege_view.dart';
 
 Drawer buildDrawer(BuildContext context) {
   return Drawer(
@@ -28,11 +29,7 @@ Drawer buildDrawer(BuildContext context) {
           ),
         ),
         ListTile(
-          title: Row(children: const [
-            IconsConstans.sinifIcon,
-            SizedBox(width: 5),
-            Text('Sınıflar', style: TextStyle(fontSize: 20))
-          ]),
+          title: Row(children: const [IconsConstans.sinifIcon, SizedBox(width: 5), Text('Sınıflar', style: TextStyle(fontSize: 20))]),
           onTap: () {
             Navigator.of(context).push(MaterialPageRoute(builder: (context) => const SinifPageView()));
           },
@@ -95,24 +92,24 @@ Drawer buildDrawer(BuildContext context) {
             children: const [
               IconsConstans.puanlarIcon,
               SizedBox(width: 5),
-              Text('Öğrenci Puanları', style: TextStyle(fontSize: 20)),
+              Text('Öğrenci Not Listeleme', style: TextStyle(fontSize: 20)),
             ],
           ),
           onTap: () {
-            Navigator.of(context).push(MaterialPageRoute(builder: (context) => TemrinNotSecimPageView()));
+            Navigator.of(context).push(MaterialPageRoute(builder: (context) => TemrinNotListelemePageView()));
           },
         ),
         const Divider(color: Colors.black, height: 2.0),
         ListTile(
           title: Row(
             children: const [
-              IconsConstans.settingsIcon,
+              IconsConstans.databaseIcon,
               SizedBox(width: 5),
-              Text('Ayarlar', style: TextStyle(fontSize: 20)),
+              Text('Db İşlemleri', style: TextStyle(fontSize: 20)),
             ],
           ),
           onTap: () {
-            //Navigator.of(context).push(MaterialPageRoute(builder: (context) => const SettingsView()));
+            Navigator.of(context).push(MaterialPageRoute(builder: (context) => VerilericekPageView()));
           },
         ),
         const Divider(color: Colors.black, height: 2.0),

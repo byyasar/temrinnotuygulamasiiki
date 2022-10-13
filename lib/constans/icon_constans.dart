@@ -15,4 +15,6 @@ class IconsConstans {
   static const temrinnotIcon = Icon(Icons.add_chart_rounded, size: 30); // Icons.check_box,
   static const saveIcon = Icon(Icons.save, size: 30); // Icons.check_box,
   static const gelmediIcon = Icon(Icons.night_shelter, size: 30); // Icons.check_box,
+  static const databaseIcon = Icon(Icons.data_saver_on, size: 30); // Icons.check_box,
+
 }
