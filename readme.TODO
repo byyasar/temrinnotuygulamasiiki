@@ -1,10 +1,9 @@
 
 Todo:
-☐ öğrenciler sınıfa göre filtrelenecek
-☐ temrinler derse göre filtrelenecek
-☐ listeler internetten çekilecek
-
-
+    ☐ öğrenciler sınıfa göre filtrelenecek
+    ☐ temrinler derse göre filtrelenecek
+    ✔ listeler internetten çekilecek @done(22-10-14 00:04)
+    ☐ öğrenci not listeme ekranı geliştirilecek
 
 Arayüz Geliştirmeleri:
     ☐ Dersler ekranında sınıf seviyesine göre renk olacak.
