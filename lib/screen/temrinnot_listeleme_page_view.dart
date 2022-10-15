@@ -7,10 +7,13 @@ import 'package:temrinnotuygulamasiiki/core/widget/custom_menu_button.dart';
 import 'package:temrinnotuygulamasiiki/core/widget/ok_button.dart';
 import 'package:temrinnotuygulamasiiki/features/ders/model/ders_model.dart';
 import 'package:temrinnotuygulamasiiki/features/ders/service/ders_database_provider.dart';
+import 'package:temrinnotuygulamasiiki/features/ogrenci/model/ogrenci_model.dart';
+import 'package:temrinnotuygulamasiiki/features/ogrenci/service/ogrenci_database_provider.dart';
 import 'package:temrinnotuygulamasiiki/features/sinif/model/sinif_model.dart';
 import 'package:temrinnotuygulamasiiki/features/sinif/service/sinif_database_provider.dart';
 import 'package:temrinnotuygulamasiiki/features/temrin/model/temrin_model.dart';
 import 'package:temrinnotuygulamasiiki/features/temrin/service/temrin_database_provider.dart';
+import 'package:temrinnotuygulamasiiki/screen/ogrenci_puan_listeleme_page_view.dart';
 import 'package:temrinnotuygulamasiiki/screen/temrinnot_page_view.dart';
 import 'package:temrinnotuygulamasiiki/widget/build_drawer.dart';
 
@@ -24,10 +27,12 @@ class TemrinNotListelemePageView extends StatefulWidget {
 String _sinifSecText = "Sınıf Seç";
 String _dersSecText = "Ders Seç";
 String _temrinSecText = "Temrin Seç";
+String _ogrenciSecText = "Öğrenci Seç";
 
 List<SinifModel> sinifList = [];
 List<DersModel> dersList = [];
 List<TemrinModel> temrinList = [];
+List<OgrenciModel> ogrenciList = [];
 
 int? _secilenSinifId;
 String? _secilenSinifAd;
@@ -35,6 +40,8 @@ int? _secilenDersId;
 String? _secilenDersAd;
 int? _secilenTemrinId;
 String? _secilenTemrinAd;
+int? _secilenOgrenciId;
+String? _secilenOgrenciAd;
 
 bool durum = false;
 
@@ -67,8 +74,8 @@ class _TemrinNotListelemePageViewState extends State<TemrinNotListelemePageView>
             _buildSinifSec(context),
             const Text('Ders:', style: TextStyle(fontSize: 18)),
             _buildDersSec(context),
-            const Text('Temrin:', style: TextStyle(fontSize: 18)),
-            _buildTemrinSec(context),
+            const Text('Öğrenci:', style: TextStyle(fontSize: 18)),
+            _buildOgrenciSec(context),
           ],
         ),
       ),
@@ -80,14 +87,13 @@ class _TemrinNotListelemePageViewState extends State<TemrinNotListelemePageView>
       padding: const EdgeInsets.all(8.0),
       child: FloatingActionButton.extended(
         //shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-        label: Text('Not Gir'),
+        label: Text('Notları Listele'),
         icon: const Icon(Icons.arrow_circle_right_outlined),
         onPressed: () {
           print('sinif id $_secilenSinifId, ders id: $_secilenDersId, temrin id: $_secilenTemrinId');
           Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => TemrinNotPageView(
-                    parametreler: [_secilenSinifId ?? 0, _secilenDersId ?? 0, _secilenTemrinId ?? 0],
-                  )));
+              builder: (context) =>
+                  OgrenciPuanListPageView(sinifId: _secilenSinifId ?? -1, dersId: _secilenDersId ?? -1, ogrenciId: _secilenOgrenciId ?? -1)));
         },
       ),
     );
@@ -110,6 +116,11 @@ class _TemrinNotListelemePageViewState extends State<TemrinNotListelemePageView>
 
   _buildTemrinSec(BuildContext context) {
     return myCustomMenuButton(context, (() => _showAlertTemrinSecDialog(context, _secilenDersId)), Text(_secilenTemrinAd ?? _temrinSecText),
+        IconsConstans.temrinIcon, null);
+  }
+
+  _buildOgrenciSec(BuildContext context) {
+    return myCustomMenuButton(context, (() => _showAlertOgrenciSecDialog(context, _secilenDersId)), Text(_secilenOgrenciAd ?? _ogrenciSecText),
         IconsConstans.temrinIcon, null);
   }
 
@@ -272,11 +283,69 @@ class _TemrinNotListelemePageViewState extends State<TemrinNotListelemePageView>
     });
   }
 
+  _showAlertOgrenciSecDialog(context, int? sinifId) async {
+    // flutter defined function
+    await ogrenciListesiniGetir;
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return alert dialog object
+        return AlertDialog(
+          //title: Center(child: Text("Sınıf Seç")),
+          actions: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                buildCancelButton(context),
+                const SizedBox(width: 10),
+                buildOkButton(context, buildOkButtononPressed),
+              ],
+            ),
+          ],
+          content: SizedBox(
+            width: MediaQuery.of(context).size.width * .6,
+            //height: MediaQuery.of(context).size.height * .4,
+            child: DropdownSearch<String>(
+              dropdownDecoratorProps: DropDownDecoratorProps(
+                dropdownSearchDecoration: InputDecoration(
+                  prefixIcon: IconsConstans.temrinIcon,
+                  labelText: "Ögrenci Seç",
+                  //hintText: "country in menu mode",
+                ),
+              ),
+              items: buildItemsOgrenci(ogrenciList),
+              onChanged: (value) {
+                print(value);
+                int _ogrenciId = ogrenciList.singleWhere((element) => element.ogrenciAdSoyad == value).id ?? -1;
+                _secilenOgrenciId = _ogrenciId;
+                print('_ogrenciId : $_secilenOgrenciId');
+                print('_ogrenciad : $value');
+                _secilenOgrenciAd = value;
+              },
+            ),
+          ),
+        );
+      },
+    ).then((value) {
+      if (value != null) {
+        setState(() {
+          if (_secilenSinifId! > -1 && _secilenDersId! > -1 && (_secilenOgrenciId ?? -1) > -1) {
+            durum = true;
+          } else {
+            durum = false;
+          }
+        });
+      }
+    });
+  }
+
   void secimleriSifirla() {
     _secilenDersId = null;
     _secilenDersAd = null;
     _secilenTemrinAd = null;
     _secilenTemrinId = null;
+    _secilenOgrenciAd = null;
+    _secilenOgrenciId = null;
   }
 
   void buildOkButtononPressed() {
@@ -294,11 +363,20 @@ class _TemrinNotListelemePageViewState extends State<TemrinNotListelemePageView>
     return items;
   }
 
+  List<String> buildItemsOgrenci(List<OgrenciModel> ogrenciModel) {
+    final items = ogrenciModel.map((e) => e.ogrenciAdSoyad.toString().trim()).toList();
+    return items;
+  }
+
   Future<void> get dersListesiniGetir async {
     dersList = await DersDatabaseProvider().getFilterList(_secilenSinifId ?? 0);
   }
 
   Future<void> get temrinListesiniGetir async {
     temrinList = await TemrinDatabaseProvider().getFilterList(_secilenDersId ?? 0);
+  }
+
+  Future<void> get ogrenciListesiniGetir async {
+    ogrenciList = await OgrenciDatabaseProvider().getFilterList(_secilenSinifId ?? 0);
   }
 }

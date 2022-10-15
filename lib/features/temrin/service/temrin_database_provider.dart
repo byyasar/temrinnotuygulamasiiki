@@ -23,8 +23,7 @@ class TemrinDatabaseProvider extends DatabaseProvider<TemrinModel> {
   @override
   Future<TemrinModel> getItem(int id) async {
     _database ??= await open();
-    var userMaps = await _database!
-        .query(_temrinTableName, where: '$columnId = ?', whereArgs: [id]);
+    var userMaps = await _database!.query(_temrinTableName, where: '$columnId = ?', whereArgs: [id]);
     if (userMaps.isNotEmpty) {
       return TemrinModel().fromJson(userMaps.first);
     } else {
@@ -48,8 +47,18 @@ class TemrinDatabaseProvider extends DatabaseProvider<TemrinModel> {
   @override
   Future<List<TemrinModel>> getFilterList(int id) async {
     _database ??= await open();
-    var sonuc = await _database!
-        .query(_temrinTableName, where: '$columnDersId = ?', whereArgs: [id]);
+    var sonuc = await _database!.query(_temrinTableName, where: '$columnDersId = ?', whereArgs: [id]);
+    if (sonuc.isNotEmpty) {
+      _temrinMaps = sonuc.map((e) => TemrinModel().fromJson(e)).toList();
+      return _temrinMaps;
+    } else {
+      return [];
+    }
+  }
+
+  Future<List<TemrinModel>> getFilterListItemParameter(int dersId) async {
+    _database ??= await open();
+    var sonuc = await _database!.query(_temrinTableName, where: '$columnDersId = ?', whereArgs: [dersId]);
     if (sonuc.isNotEmpty) {
       _temrinMaps = sonuc.map((e) => TemrinModel().fromJson(e)).toList();
       return _temrinMaps;
@@ -81,8 +90,7 @@ class TemrinDatabaseProvider extends DatabaseProvider<TemrinModel> {
   Future<bool> removeItem(int id) async {
     _database ??= await open();
     if (_database != null) {
-      await _database!
-          .delete(_temrinTableName, where: '$columnId=?', whereArgs: [id]);
+      await _database!.delete(_temrinTableName, where: '$columnId=?', whereArgs: [id]);
       return true;
     }
     return false;
@@ -97,8 +105,7 @@ class TemrinDatabaseProvider extends DatabaseProvider<TemrinModel> {
   Future<bool> updateItem(int id, TemrinModel model) async {
     _database ??= await open();
     if (_database != null) {
-      await _database!.update(_temrinTableName, model.toJson(),
-          where: '$columnId = ?', whereArgs: [id]);
+      await _database!.update(_temrinTableName, model.toJson(), where: '$columnId = ?', whereArgs: [id]);
       return true;
     }
     return false;

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:temrinnotuygulamasiiki/features/theme/light_theme.dart';
-import 'package:temrinnotuygulamasiiki/screen/verilericek_paege_view.dart';
+import 'package:temrinnotuygulamasiiki/screen/temrinnot_listeleme_page_view.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Temrin Not Sistemi App',
       theme: LighTheme().theme,
-      home: VerilericekPageView(),
+      home: TemrinNotListelemePageView(),
     );
   }
 }

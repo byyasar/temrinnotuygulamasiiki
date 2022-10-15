@@ -57,7 +57,7 @@ class _TemrinnotPageViewState extends State<TemrinNotPageView> {
       child: Scaffold(
           appBar: customAppBar(
             context: context,
-            title: const Text('Temrinn Notlar'),
+            title: const Text('Temrin Notlar'),
           ),
           floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
           body: Container(

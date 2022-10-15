@@ -16,16 +16,7 @@ class TemrinNotModel extends DatabaseModel<TemrinNotModel> {
   String? notTarih;
 
   TemrinNotModel(
-      {this.id,
-      this.temrinId,
-      this.ogrenciId,
-      this.puanBir,
-      this.puanIki,
-      this.puanUc,
-      this.puanDort,
-      this.puanBes,
-      this.aciklama,
-      this.notTarih});
+      {this.id, this.temrinId, this.ogrenciId, this.puanBir, this.puanIki, this.puanUc, this.puanDort, this.puanBes, this.aciklama, this.notTarih});
 
   @override
   TemrinNotModel fromJson(Map<String, Object?> json) {
@@ -35,5 +26,10 @@ class TemrinNotModel extends DatabaseModel<TemrinNotModel> {
   @override
   Map<String, dynamic> toJson() {
     return _$TemrinNotModelToJson(this);
+  }
+
+  @override
+  String toString() {
+    return '{$id $temrinId $ogrenciId $puanBir  $puanIki $puanUc $puanDort $puanBes $aciklama $notTarih}';
   }
 }
