@@ -4,18 +4,25 @@ import 'package:temrinnotuygulamasiiki/features/temrinnot/model/temrinnot_model.
 import 'package:temrinnotuygulamasiiki/features/temrinnot/service/temrinnot_database_provider.dart';
 
 class TemrinNotCubit extends Cubit<TemrinNotState> {
-  TemrinNotCubit({required TemrinNotDatabaseProvider databaseProvider})
+  TemrinNotCubit({required TemrinNotDatabaseProvider databaseProvider, int? ogrenciId})
       : _databaseProvider = databaseProvider,
+        _ogrenciId = ogrenciId ?? -1,
         super(const TemrinNotState()) {
-    temrinnotleriGetir();
+    temrinnotleriGetir(_ogrenciId);
   }
 
   final TemrinNotDatabaseProvider _databaseProvider;
+  final int _ogrenciId;
 
-  Future<void> temrinnotleriGetir() async {
+  Future<void> temrinnotleriGetir(int? ogrenciId) async {
     emit(state.copyWith(isLoading: true));
-    final temrinnotList = await _databaseProvider.getList();
-    emit(state.copyWith(temrinNotModel: temrinnotList, isLoading: false, isCompleted: true));
+    if (ogrenciId == -1) {
+      final temrinnotList = await _databaseProvider.getList();
+      emit(state.copyWith(temrinNotModel: temrinnotList, isLoading: false, isCompleted: true));
+    } else {
+      final temrinnotList = await _databaseProvider.getFilterListItemOgrenciParameter(ogrenciId: ogrenciId);
+      emit(state.copyWith(temrinNotModel: temrinnotList, isLoading: false, isCompleted: true));
+    }
   }
 
   Future<List<TemrinNotModel>> filtrelenmisTemrinNotleriGetir(int dersId) async {

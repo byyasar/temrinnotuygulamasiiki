@@ -14,7 +14,6 @@ import 'package:temrinnotuygulamasiiki/features/sinif/service/sinif_database_pro
 import 'package:temrinnotuygulamasiiki/features/temrin/model/temrin_model.dart';
 import 'package:temrinnotuygulamasiiki/features/temrin/service/temrin_database_provider.dart';
 import 'package:temrinnotuygulamasiiki/screen/ogrenci_puan_listeleme_page_view.dart';
-import 'package:temrinnotuygulamasiiki/screen/temrinnot_page_view.dart';
 import 'package:temrinnotuygulamasiiki/widget/build_drawer.dart';
 
 class TemrinNotListelemePageView extends StatefulWidget {
@@ -26,7 +25,6 @@ class TemrinNotListelemePageView extends StatefulWidget {
 
 String _sinifSecText = "Sınıf Seç";
 String _dersSecText = "Ders Seç";
-String _temrinSecText = "Temrin Seç";
 String _ogrenciSecText = "Öğrenci Seç";
 
 List<SinifModel> sinifList = [];
@@ -39,9 +37,9 @@ String? _secilenSinifAd;
 int? _secilenDersId;
 String? _secilenDersAd;
 int? _secilenTemrinId;
-String? _secilenTemrinAd;
 int? _secilenOgrenciId;
 String? _secilenOgrenciAd;
+OgrenciModel? _secilenOgrenciModel;
 
 bool durum = false;
 
@@ -92,8 +90,8 @@ class _TemrinNotListelemePageViewState extends State<TemrinNotListelemePageView>
         onPressed: () {
           print('sinif id $_secilenSinifId, ders id: $_secilenDersId, temrin id: $_secilenTemrinId');
           Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) =>
-                  OgrenciPuanListPageView(sinifId: _secilenSinifId ?? -1, dersId: _secilenDersId ?? -1, ogrenciId: _secilenOgrenciId ?? -1)));
+              builder: (context) => OgrenciPuanListPageView(
+                  sinifId: _secilenSinifId ?? -1, dersId: _secilenDersId ?? -1, ogrenciModel: _secilenOgrenciModel ?? OgrenciModel())));
         },
       ),
     );
@@ -112,11 +110,6 @@ class _TemrinNotListelemePageViewState extends State<TemrinNotListelemePageView>
   _buildDersSec(BuildContext context) {
     return myCustomMenuButton(
         context, (() => _showAlertDersSecDialog(context, _secilenSinifId)), Text(_secilenDersAd ?? _dersSecText), IconsConstans.dersIcon, null);
-  }
-
-  _buildTemrinSec(BuildContext context) {
-    return myCustomMenuButton(context, (() => _showAlertTemrinSecDialog(context, _secilenDersId)), Text(_secilenTemrinAd ?? _temrinSecText),
-        IconsConstans.temrinIcon, null);
   }
 
   _buildOgrenciSec(BuildContext context) {
@@ -170,7 +163,7 @@ class _TemrinNotListelemePageViewState extends State<TemrinNotListelemePageView>
     ).then((value) {
       setState(() {
         _secilenDersAd = null;
-        _secilenTemrinAd = null;
+        //_secilenTemrinAd = null;
         durum = false;
         //print('_secilenDersAd : $_secilenDersAd');
       });
@@ -221,65 +214,10 @@ class _TemrinNotListelemePageViewState extends State<TemrinNotListelemePageView>
       },
     ).then((value) {
       setState(() {
-        _secilenTemrinAd = null;
+        // _secilenTemrinAd = null;
         durum = false;
         //print('_secilenTemrinAd : $_secilenTemrinAd');
       });
-    });
-  }
-
-  _showAlertTemrinSecDialog(context, int? dersId) async {
-    // flutter defined function
-    await temrinListesiniGetir;
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        // return alert dialog object
-        return AlertDialog(
-          //title: Center(child: Text("Sınıf Seç")),
-          actions: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                buildCancelButton(context),
-                const SizedBox(width: 10),
-                buildOkButton(context, buildOkButtononPressed),
-              ],
-            ),
-          ],
-          content: SizedBox(
-            width: MediaQuery.of(context).size.width * .6,
-            //height: MediaQuery.of(context).size.height * .4,
-            child: DropdownSearch<String>(
-              dropdownDecoratorProps: DropDownDecoratorProps(
-                dropdownSearchDecoration: InputDecoration(
-                  prefixIcon: IconsConstans.temrinIcon,
-                  labelText: "Temrin Seç",
-                  //hintText: "country in menu mode",
-                ),
-              ),
-              items: buildItemsTemrin(temrinList),
-              onChanged: (value) {
-                int _temrinid = temrinList.singleWhere((element) => element.temrinKonusu == value).id ?? -1;
-                _secilenTemrinId = _temrinid;
-                print('_temrinid : $_secilenTemrinId');
-                print('_temrinad : $value');
-                _secilenTemrinAd = value;
-              },
-            ),
-          ),
-        );
-      },
-    ).then((value) {
-      if (value != null) {
-        setState(() {
-          if (_secilenSinifId! > -1 && _secilenDersId! > -1 && _secilenTemrinId! > -1) {
-            durum = true;
-          } else {
-            durum = false;
-          }
-        });
-      }
     });
   }
 
@@ -316,8 +254,10 @@ class _TemrinNotListelemePageViewState extends State<TemrinNotListelemePageView>
               items: buildItemsOgrenci(ogrenciList),
               onChanged: (value) {
                 print(value);
-                int _ogrenciId = ogrenciList.singleWhere((element) => element.ogrenciAdSoyad == value).id ?? -1;
-                _secilenOgrenciId = _ogrenciId;
+                //int _ogrenciId = ogrenciList.singleWhere((element) => element.ogrenciAdSoyad == value).id ?? -1;
+                _secilenOgrenciModel = ogrenciList.singleWhere((element) => element.ogrenciAdSoyad == value);
+
+                _secilenOgrenciId = _secilenOgrenciModel!.id ?? -1;
                 print('_ogrenciId : $_secilenOgrenciId');
                 print('_ogrenciad : $value');
                 _secilenOgrenciAd = value;
@@ -342,7 +282,7 @@ class _TemrinNotListelemePageViewState extends State<TemrinNotListelemePageView>
   void secimleriSifirla() {
     _secilenDersId = null;
     _secilenDersAd = null;
-    _secilenTemrinAd = null;
+    // _secilenTemrinAd = null;
     _secilenTemrinId = null;
     _secilenOgrenciAd = null;
     _secilenOgrenciId = null;

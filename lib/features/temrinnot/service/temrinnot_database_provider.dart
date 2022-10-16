@@ -63,7 +63,18 @@ class TemrinNotDatabaseProvider extends DatabaseProvider<TemrinNotModel> {
 
   Future<List<TemrinNotModel>> getFilterListItemParameter(int temrinId, int ogrenciId) async {
     _database ??= await open();
-    var sonuc = await _database!.query(_temrinTableName, where: '$columnTemrinId = ? and $columnTemrinId=?', whereArgs: [temrinId, ogrenciId]);
+    var sonuc = await _database!.query(_temrinTableName, where: '$columnTemrinId = ? and $columnOgrenciId=?', whereArgs: [temrinId, ogrenciId]);
+    if (sonuc.isNotEmpty) {
+      _temrinMaps = sonuc.map((e) => TemrinNotModel().fromJson(e)).toList();
+      return _temrinMaps;
+    } else {
+      return [];
+    }
+  }
+
+  Future<List<TemrinNotModel>> getFilterListItemOgrenciParameter({int? ogrenciId}) async {
+    _database ??= await open();
+    var sonuc = await _database!.query(_temrinTableName, where: '$columnOgrenciId=?', whereArgs: [ogrenciId]);
     if (sonuc.isNotEmpty) {
       _temrinMaps = sonuc.map((e) => TemrinNotModel().fromJson(e)).toList();
       return _temrinMaps;
