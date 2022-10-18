@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:temrinnotuygulamasiiki/core/widget/custom_appbar.dart';
 import 'package:temrinnotuygulamasiiki/features/ogrenci/model/ogrenci_model.dart';
+import 'package:temrinnotuygulamasiiki/features/sinif/model/sinif_model.dart';
 import 'package:temrinnotuygulamasiiki/features/temrin/model/temrin_model.dart';
 import 'package:temrinnotuygulamasiiki/features/temrin/service/temrin_database_provider.dart';
 import 'package:temrinnotuygulamasiiki/features/temrinnot/cubit/temrinnot_cubit.dart';
@@ -11,16 +12,16 @@ import 'package:temrinnotuygulamasiiki/features/temrinnot/model/temrinnot_model.
 import 'package:temrinnotuygulamasiiki/features/temrinnot/service/temrinnot_database_provider.dart';
 
 class OgrenciPuanListPageView extends StatefulWidget {
-  final int sinifId;
+  final SinifModel sinifModel;
   final int dersId;
 //  final int ogrenciId;
   final OgrenciModel ogrenciModel;
 
   OgrenciPuanListPageView({
     Key? key,
-    required this.sinifId,
     required this.dersId,
     required this.ogrenciModel,
+    required this.sinifModel,
   }) : super(key: key);
 
   @override
@@ -29,6 +30,8 @@ class OgrenciPuanListPageView extends StatefulWidget {
 
 List<TemrinModel> temrinList = [];
 List<int> toplam = [];
+double _ortalama = 0;
+double _ortalamaToplam = 0;
 
 class _OgrenciPuanListPageViewState extends State<OgrenciPuanListPageView> {
   @override
@@ -61,6 +64,8 @@ class _OgrenciPuanListPageViewState extends State<OgrenciPuanListPageView> {
           floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
           body: BlocBuilder<TemrinNotCubit, TemrinNotState>(
             builder: (context, state) {
+              List<TemrinNotModel> liste = state.temrinNotModel ?? [];
+              _ortalama = ortalama(liste);
               return Container(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -71,13 +76,13 @@ class _OgrenciPuanListPageViewState extends State<OgrenciPuanListPageView> {
                         if (state.isCompleted) {
                           print('state');
                           print(state);
-                          List<TemrinNotModel> liste = state.temrinNotModel ?? [];
+
                           return Expanded(child: _buildOgrenciNotListesi(context, liste));
                         } else {
                           return CircularProgressIndicator();
                         }
                       },
-                    )
+                    ),
                   ],
                 ),
               );
@@ -97,10 +102,10 @@ class _OgrenciPuanListPageViewState extends State<OgrenciPuanListPageView> {
           trailing: Column(
             children: [
               const Text('Ortalama'),
-              CircleAvatar(backgroundColor: Colors.yellow, radius: 18, child: Text('${toplam.isEmpty ? "-" : ortalama()}')),
+              CircleAvatar(backgroundColor: Colors.yellow, radius: 18, child: Text('${_ortalama.isNaN ? "-" : _ortalama.round()}')),
             ],
           ),
-          subtitle: Text('Nu: ${widget.ogrenciModel.ogrenciNu} - Sınıfı: ${widget.ogrenciModel.sinifId}',
+          subtitle: Text('Nu: ${widget.ogrenciModel.ogrenciNu} - Sınıfı: ${widget.sinifModel.sinifAd}',
               style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
           title: Text('${widget.ogrenciModel.ogrenciAdSoyad}', style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold))),
     );
@@ -131,13 +136,23 @@ class _OgrenciPuanListPageViewState extends State<OgrenciPuanListPageView> {
         });
   }
 
-  double ortalama() {
-    double ortalama = 0;
-    for (var t in toplam) {
-      ortalama += t;
+  double ortalama(List<TemrinNotModel> temrinNotModels) {
+    int sayac = 0;
+    _ortalamaToplam = 0;
+    for (var temrinNotModel in temrinNotModels) {
+      int puan = ((temrinNotModel.puanBir ?? 0) +
+          (temrinNotModel.puanIki ?? 0) +
+          (temrinNotModel.puanUc ?? 0) +
+          (temrinNotModel.puanDort ?? 0) +
+          (temrinNotModel.puanBes ?? 0));
+      if (puan > -5) {
+        sayac++;
+        _ortalamaToplam += (puan);
+      }
     }
-    print(ortalama / toplam.length);
-    return ortalama / toplam.length;
+    print('ortalama');
+    print(_ortalamaToplam / sayac);
+    return (_ortalamaToplam / sayac);
   }
 
   int puanHesapla(TemrinNotModel temrinNotModel) {

@@ -40,6 +40,7 @@ int? _secilenTemrinId;
 int? _secilenOgrenciId;
 String? _secilenOgrenciAd;
 OgrenciModel? _secilenOgrenciModel;
+SinifModel? _secilenSinifModel;
 
 bool durum = false;
 
@@ -91,7 +92,9 @@ class _TemrinNotListelemePageViewState extends State<TemrinNotListelemePageView>
           print('sinif id $_secilenSinifId, ders id: $_secilenDersId, temrin id: $_secilenTemrinId');
           Navigator.of(context).push(MaterialPageRoute(
               builder: (context) => OgrenciPuanListPageView(
-                  sinifId: _secilenSinifId ?? -1, dersId: _secilenDersId ?? -1, ogrenciModel: _secilenOgrenciModel ?? OgrenciModel())));
+                  sinifModel: _secilenSinifModel ?? SinifModel(),
+                  dersId: _secilenDersId ?? -1,
+                  ogrenciModel: _secilenOgrenciModel ?? OgrenciModel())));
         },
       ),
     );
@@ -149,11 +152,12 @@ class _TemrinNotListelemePageViewState extends State<TemrinNotListelemePageView>
               ),
               items: buildItems(sinifList),
               onChanged: (value) {
-                int _sinifid = sinifList.singleWhere((element) => element.sinifAd == value).id ?? -1;
-                _secilenSinifId = _sinifid;
+                //int _sinifid = sinifList.singleWhere((element) => element.sinifAd == value).id ?? -1;
+                _secilenSinifModel = sinifList.singleWhere((element) => element.sinifAd == value);
+                _secilenSinifId = _secilenSinifModel!.id ?? -1;
                 print('sinifId : $_secilenSinifId');
                 print('sinifSinifAd : $value');
-                _secilenSinifAd = value;
+                _secilenSinifAd = _secilenSinifModel!.sinifAd ?? '';
                 //secimleriSifirla;
               },
             ),
