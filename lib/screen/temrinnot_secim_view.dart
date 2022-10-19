@@ -35,6 +35,10 @@ String? _secilenDersAd;
 int? _secilenTemrinId;
 String? _secilenTemrinAd;
 
+TemrinModel? _secilenTemrinModel;
+SinifModel? _secilenSinifModel;
+DersModel? _secilenDersModel;
+
 bool durum = false;
 
 class _TemrinNotSecimPageViewState extends State<TemrinNotSecimPageView> {
@@ -85,7 +89,9 @@ class _TemrinNotSecimPageViewState extends State<TemrinNotSecimPageView> {
           print('sinif id $_secilenSinifId, ders id: $_secilenDersId, temrin id: $_secilenTemrinId');
           Navigator.of(context).push(MaterialPageRoute(
               builder: (context) => TemrinNotPageView(
-                    parametreler: [_secilenSinifId??0,_secilenDersId ??0, _secilenTemrinId ??0],
+                    dersModel: _secilenDersModel ?? DersModel(),
+                    sinifModel: _secilenSinifModel ?? SinifModel(),
+                    temrinModel: _secilenTemrinModel ?? TemrinModel(),
                   )));
         },
       ),
@@ -98,18 +104,18 @@ class _TemrinNotSecimPageViewState extends State<TemrinNotSecimPageView> {
   }
 
   _buildSinifSec(BuildContext context) {
-    return myCustomMenuButton(context, (() => _showAlertSinifSectDialog(context)),
-        Text(_secilenSinifAd ?? _sinifSecText), IconsConstans.sinifIcon, null);
+    return myCustomMenuButton(
+        context, (() => _showAlertSinifSectDialog(context)), Text(_secilenSinifAd ?? _sinifSecText), IconsConstans.sinifIcon, null);
   }
 
   _buildDersSec(BuildContext context) {
-    return myCustomMenuButton(context, (() => _showAlertDersSecDialog(context, _secilenSinifId)),
-        Text(_secilenDersAd ?? _dersSecText), IconsConstans.dersIcon, null);
+    return myCustomMenuButton(
+        context, (() => _showAlertDersSecDialog(context, _secilenSinifId)), Text(_secilenDersAd ?? _dersSecText), IconsConstans.dersIcon, null);
   }
 
   _buildTemrinSec(BuildContext context) {
-    return myCustomMenuButton(context, (() => _showAlertTemrinSecDialog(context, _secilenDersId)),
-        Text(_secilenTemrinAd ?? _temrinSecText), IconsConstans.temrinIcon, null);
+    return myCustomMenuButton(context, (() => _showAlertTemrinSecDialog(context, _secilenDersId)), Text(_secilenTemrinAd ?? _temrinSecText),
+        IconsConstans.temrinIcon, null);
   }
 
 // Alert Dialog function
@@ -144,11 +150,11 @@ class _TemrinNotSecimPageViewState extends State<TemrinNotSecimPageView> {
               ),
               items: buildItems(sinifList),
               onChanged: (value) {
-                int _sinifid = sinifList.singleWhere((element) => element.sinifAd == value).id ?? -1;
-                _secilenSinifId = _sinifid;
+                _secilenSinifModel = sinifList.singleWhere((element) => element.sinifAd == value);
+                _secilenSinifId = _secilenSinifModel!.id;
                 print('sinifId : $_secilenSinifId');
                 print('sinifSinifAd : $value');
-                _secilenSinifAd = value;
+                _secilenSinifAd = _secilenSinifModel!.sinifAd;
                 //secimleriSifirla;
               },
             ),
@@ -197,11 +203,11 @@ class _TemrinNotSecimPageViewState extends State<TemrinNotSecimPageView> {
               ),
               items: buildItemsDers(dersList),
               onChanged: (value) {
-                int _dersid = dersList.singleWhere((element) => element.dersAd == value).id ?? -1;
-                _secilenDersId = _dersid;
+                _secilenDersModel = dersList.singleWhere((element) => element.dersAd == value);
+                _secilenDersId = _secilenDersModel!.id;
                 print('dersid : $_secilenDersId');
                 print('dersAd : $value');
-                _secilenDersAd = value;
+                _secilenDersAd = _secilenDersModel!.dersAd;
               },
             ),
           ),
@@ -248,11 +254,11 @@ class _TemrinNotSecimPageViewState extends State<TemrinNotSecimPageView> {
               ),
               items: buildItemsTemrin(temrinList),
               onChanged: (value) {
-                int _temrinid = temrinList.singleWhere((element) => element.temrinKonusu == value).id ?? -1;
-                _secilenTemrinId = _temrinid;
+                _secilenTemrinModel = temrinList.singleWhere((element) => element.temrinKonusu == value);
+                _secilenTemrinId = _secilenTemrinModel!.id;
                 print('_temrinid : $_secilenTemrinId');
                 print('_temrinad : $value');
-                _secilenTemrinAd = value;
+                _secilenTemrinAd = _secilenTemrinModel!.temrinKonusu;
               },
             ),
           ),

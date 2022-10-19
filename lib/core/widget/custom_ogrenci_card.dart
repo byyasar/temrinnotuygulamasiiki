@@ -86,7 +86,7 @@ class _CustomOgrenciCardState extends State<CustomOgrenciCard> {
                       context.read<TemrinNotCubit>().temrinnotleriGetir(-1);
                     });
                   },
-                  subtitle: Text("Nu: ${widget.transaction.ogrenciNu} Sınıf: ${widget.transaction.sinifId}"),
+                  subtitle: Text("Nu: ${widget.transaction.ogrenciNu} "),
                 ),
               ),
             ],

@@ -92,28 +92,31 @@ class _OgrenciPuanListPageViewState extends State<OgrenciPuanListPageView> {
   }
 
   Widget _ogrenciCard(BuildContext context) {
-    return Card(
-      color: Colors.blueAccent,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 5),
+      child: Card(
+        color: Colors.blueAccent,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+        elevation: 2,
+        child: ListTile(
+            trailing: Column(
+              children: [
+                const Text('Ortalama'),
+                CircleAvatar(backgroundColor: Colors.yellow, radius: 18, child: Text('${_ortalama.isNaN ? "-" : _ortalama.round()}')),
+              ],
+            ),
+            subtitle: Text('Nu: ${widget.ogrenciModel.ogrenciNu} - Sınıfı: ${widget.sinifModel.sinifAd}',
+                style: const TextStyle(fontWeight: FontWeight.bold)),
+            title: Text('${widget.ogrenciModel.ogrenciAdSoyad}', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold))),
       ),
-      elevation: 2,
-      child: ListTile(
-          trailing: Column(
-            children: [
-              const Text('Ortalama'),
-              CircleAvatar(backgroundColor: Colors.yellow, radius: 18, child: Text('${_ortalama.isNaN ? "-" : _ortalama.round()}')),
-            ],
-          ),
-          subtitle: Text('Nu: ${widget.ogrenciModel.ogrenciNu} - Sınıfı: ${widget.sinifModel.sinifAd}',
-              style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
-          title: Text('${widget.ogrenciModel.ogrenciAdSoyad}', style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold))),
     );
   }
 
   Widget _buildOgrenciNotListesi(BuildContext context, List<TemrinNotModel> data) {
     return ListView.builder(
-        padding: const EdgeInsets.symmetric(vertical: 5),
+        padding: const EdgeInsets.symmetric(horizontal: 5),
         itemCount: data.length,
         itemBuilder: (BuildContext context, int index) {
           int _puan = puanHesapla(data[index]);

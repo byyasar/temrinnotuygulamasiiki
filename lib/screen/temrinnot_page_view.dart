@@ -1,19 +1,26 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:kartal/kartal.dart';
 import 'package:temrinnotuygulamasiiki/core/widget/custom_appbar.dart';
 import 'package:temrinnotuygulamasiiki/core/widget/custom_ogrenci_card.dart';
+import 'package:temrinnotuygulamasiiki/features/ders/model/ders_model.dart';
 import 'package:temrinnotuygulamasiiki/features/ogrenci/model/ogrenci_model.dart';
 import 'package:temrinnotuygulamasiiki/features/ogrenci/service/ogrenci_database_provider.dart';
+import 'package:temrinnotuygulamasiiki/features/sinif/model/sinif_model.dart';
+import 'package:temrinnotuygulamasiiki/features/temrin/model/temrin_model.dart';
 import 'package:temrinnotuygulamasiiki/features/temrinnot/cubit/temrinnot_cubit.dart';
 import 'package:temrinnotuygulamasiiki/features/temrinnot/cubit/temrinnot_state.dart';
 import 'package:temrinnotuygulamasiiki/features/temrinnot/model/temrinnot_model.dart';
 import 'package:temrinnotuygulamasiiki/features/temrinnot/service/temrinnot_database_provider.dart';
 
 class TemrinNotPageView extends StatefulWidget {
-  List<int>? parametreler;
+  //List<int>? parametreler;
+  final TemrinModel temrinModel;
+  final DersModel dersModel;
+  final SinifModel sinifModel;
 
-  TemrinNotPageView({Key? key, required this.parametreler}) : super(key: key);
+  TemrinNotPageView({Key? key, required this.temrinModel, required this.dersModel, required this.sinifModel}) : super(key: key);
 
   @override
   State<TemrinNotPageView> createState() => _TemrinnotPageViewState();
@@ -27,7 +34,7 @@ class _TemrinnotPageViewState extends State<TemrinNotPageView> {
   @override
   void initState() {
     super.initState();
-    temrinListesiniGetir(widget.parametreler![2]);
+    temrinListesiniGetir(widget.temrinModel.id!);
   }
 
   @override
@@ -65,30 +72,38 @@ class _TemrinnotPageViewState extends State<TemrinNotPageView> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Container(
-                    height: 25,
-                    color: Colors.amber,
-                    child: Text("${widget.parametreler?[0].toString()}"),
+                  padding: const EdgeInsets.symmetric(horizontal: 5),
+                  child: Card(
+                    color: Colors.blueAccent,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+/*   parametreler: [_secilenSinifId??0,_secilenDersId ??0, _secilenTemrinId ??0], */
+                    elevation: 2,
+                    child: ListTile(
+                        // title: Text('${widget.temrinModel.temrinKonusu} ', style: const TextStyle(fontWeight: FontWeight.bold)),
+                        subtitle: Text('Sınıf: ${widget.sinifModel.sinifAd}', style: const TextStyle(fontWeight: FontWeight.bold)),
+                        title: Text('${widget.dersModel.dersAd}' '\nTemrin Konusu: ${widget.temrinModel.temrinKonusu} ',
+                            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold))),
                   ),
                 ),
                 Expanded(child: BlocBuilder<TemrinNotCubit, TemrinNotState>(
                   builder: (context, state) {
                     return FutureBuilder(
-                      future: OgrenciDatabaseProvider().getFilterList(widget.parametreler![0]),
+                      future: OgrenciDatabaseProvider().getFilterList(widget.sinifModel.id!),
                       builder: (BuildContext context, AsyncSnapshot<List<OgrenciModel>> snapshot) {
                         if (snapshot.hasData) {
                           sinifList = snapshot.data!;
                           List<TemrinNotModel>? temrinNotModels = temrinNotList
                               .where(
-                                ((element) => element.temrinId == widget.parametreler![2]),
+                                ((element) => element.temrinId == widget.temrinModel.id),
                               )
                               .toList();
 
                           return BlocListener<TemrinNotCubit, TemrinNotState>(
                             listener: (context, state) {
                               print('State değişti');
-                              temrinListesiniGetir(widget.parametreler![2]);
+                              temrinListesiniGetir(widget.temrinModel.id!);
                             },
                             child: _buildOgrenciListesi(context, temrinNotModels),
                           );
@@ -125,7 +140,7 @@ class _TemrinnotPageViewState extends State<TemrinNotPageView> {
                         (temrinNotModel.puanDort ?? 0) +
                         (temrinNotModel.puanBes ?? 0))
                     .toString(),
-            temrinId: widget.parametreler![2],
+            temrinId: widget.temrinModel.id!,
           );
         }));
   }
