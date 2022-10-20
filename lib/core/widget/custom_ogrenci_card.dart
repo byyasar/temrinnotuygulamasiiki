@@ -36,7 +36,7 @@ class _CustomOgrenciCardState extends State<CustomOgrenciCard> {
           child: Row(
             children: [
               Expanded(
-                flex: 9,
+                flex: 10,
                 child: ListTile(
                   title: Row(
                     children: [
@@ -49,13 +49,14 @@ class _CustomOgrenciCardState extends State<CustomOgrenciCard> {
                         ),
                       ),
                       Expanded(
-                          flex: 3,
+                          flex: 2,
                           child: CircleAvatar(
+                            radius: 24,
                             child: widget.puan!.isEmpty || widget.puan == null
                                 ? Text("")
                                 : int.tryParse(widget.puan!)! < 0
-                                    ? Text('G')
-                                    : Text(widget.puan!.toString()),
+                                    ? Text('G', style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold))
+                                    : Text(widget.puan!.toString(), style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
                             // child: Text("Y"),
                           )),
                     ],
@@ -86,7 +87,7 @@ class _CustomOgrenciCardState extends State<CustomOgrenciCard> {
                       context.read<TemrinNotCubit>().temrinnotleriGetir(-1);
                     });
                   },
-                  subtitle: Text("Nu: ${widget.transaction.ogrenciNu} "),
+                  subtitle: Text("Nu: ${widget.transaction.ogrenciNu} ", style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                 ),
               ),
             ],

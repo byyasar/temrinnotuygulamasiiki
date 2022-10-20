@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:temrinnotuygulamasiiki/core/widget/custom_appbar.dart';
+import 'package:temrinnotuygulamasiiki/features/ders/model/ders_model.dart';
 import 'package:temrinnotuygulamasiiki/features/ogrenci/model/ogrenci_model.dart';
 import 'package:temrinnotuygulamasiiki/features/sinif/model/sinif_model.dart';
 import 'package:temrinnotuygulamasiiki/features/temrin/model/temrin_model.dart';
@@ -13,13 +14,13 @@ import 'package:temrinnotuygulamasiiki/features/temrinnot/service/temrinnot_data
 
 class OgrenciPuanListPageView extends StatefulWidget {
   final SinifModel sinifModel;
-  final int dersId;
+  final DersModel dersModel;
 //  final int ogrenciId;
   final OgrenciModel ogrenciModel;
 
   OgrenciPuanListPageView({
     Key? key,
-    required this.dersId,
+    required this.dersModel,
     required this.ogrenciModel,
     required this.sinifModel,
   }) : super(key: key);
@@ -37,7 +38,7 @@ class _OgrenciPuanListPageViewState extends State<OgrenciPuanListPageView> {
   @override
   void initState() {
     super.initState();
-    temrinListesiniGetir(widget.dersId);
+    temrinListesiniGetir(widget.dersModel.id!);
   }
 
   @override
@@ -102,12 +103,16 @@ class _OgrenciPuanListPageViewState extends State<OgrenciPuanListPageView> {
         elevation: 2,
         child: ListTile(
             trailing: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                const Text('Ortalama'),
-                CircleAvatar(backgroundColor: Colors.yellow, radius: 18, child: Text('${_ortalama.isNaN ? "-" : _ortalama.round()}')),
+                const Text('Ortalama', style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+                CircleAvatar(
+                    backgroundColor: Colors.pinkAccent,
+                    radius: 20,
+                    child: Text('${_ortalama.isNaN ? "-" : _ortalama.round()}', style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold))),
               ],
             ),
-            subtitle: Text('Nu: ${widget.ogrenciModel.ogrenciNu} - Sınıfı: ${widget.sinifModel.sinifAd}',
+            subtitle: Text('Nu: ${widget.ogrenciModel.ogrenciNu} - Sınıfı: ${widget.sinifModel.sinifAd}\nDers: ${widget.dersModel.dersAd}',
                 style: const TextStyle(fontWeight: FontWeight.bold)),
             title: Text('${widget.ogrenciModel.ogrenciAdSoyad}', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold))),
       ),
@@ -126,10 +131,11 @@ class _OgrenciPuanListPageViewState extends State<OgrenciPuanListPageView> {
             ),
             elevation: 2,
             child: ListTile(
-              leading: CircleAvatar(radius: 12, child: Text('${index + 1}')),
+              leading: CircleAvatar(radius: 18, child: Text('${index + 1}')),
               trailing: CircleAvatar(
-                backgroundColor: _puan <= 0 ? Colors.red : Colors.yellow,
-                child: Text('${_puan == -5 ? 'G' : _puan}', style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                radius: 22,
+                backgroundColor: _puan <= 0 ? Colors.red : Colors.pinkAccent,
+                child: Text('${_puan == -5 ? 'G' : _puan}', style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
               ),
               title: Text('${temrinList.singleWhere((element) => element.id == data[index].temrinId).temrinKonusu} '),
               //subtitle: Text('key: ${data[index].key} Tid ${data[index].temrinId} puan ${data[index].puan}'),

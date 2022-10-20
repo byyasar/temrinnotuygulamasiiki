@@ -41,6 +41,7 @@ int? _secilenOgrenciId;
 String? _secilenOgrenciAd;
 OgrenciModel? _secilenOgrenciModel;
 SinifModel? _secilenSinifModel;
+DersModel? _secilenDersModel;
 
 bool durum = false;
 
@@ -93,7 +94,7 @@ class _TemrinNotListelemePageViewState extends State<TemrinNotListelemePageView>
           Navigator.of(context).push(MaterialPageRoute(
               builder: (context) => OgrenciPuanListPageView(
                   sinifModel: _secilenSinifModel ?? SinifModel(),
-                  dersId: _secilenDersId ?? -1,
+                  dersModel: _secilenDersModel ?? DersModel(),
                   ogrenciModel: _secilenOgrenciModel ?? OgrenciModel())));
         },
       ),
@@ -206,11 +207,11 @@ class _TemrinNotListelemePageViewState extends State<TemrinNotListelemePageView>
               ),
               items: buildItemsDers(dersList),
               onChanged: (value) {
-                int _dersid = dersList.singleWhere((element) => element.dersAd == value).id ?? -1;
-                _secilenDersId = _dersid;
+                _secilenDersModel = dersList.singleWhere((element) => element.dersAd == value);
+                _secilenDersId = _secilenDersModel!.id;
                 print('dersid : $_secilenDersId');
                 print('dersAd : $value');
-                _secilenDersAd = value;
+                _secilenDersAd = _secilenDersModel!.dersAd;
               },
             ),
           ),
