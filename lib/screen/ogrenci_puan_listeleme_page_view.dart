@@ -109,7 +109,7 @@ class _OgrenciPuanListPageViewState extends State<OgrenciPuanListPageView> {
                 CircleAvatar(
                     backgroundColor: Colors.pinkAccent,
                     radius: 20,
-                    child: Text('${_ortalama.isNaN ? "-" : _ortalama.round()}', style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold))),
+                    child: Text('${_ortalama.isNaN ? "-" : _ortalama.round()}', style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold))),
               ],
             ),
             subtitle: Text('Nu: ${widget.ogrenciModel.ogrenciNu} - Sınıfı: ${widget.sinifModel.sinifAd}\nDers: ${widget.dersModel.dersAd}',

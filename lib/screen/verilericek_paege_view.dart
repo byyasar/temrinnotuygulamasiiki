@@ -61,6 +61,7 @@ class _VerilericekPageViewState extends State<VerilericekPageView> {
   }
 
   Future<void> verileriGetir(String islem) async {
+    SnackBar snackBar;
     String url = '';
     switch (islem) {
       case 'sinif':
@@ -89,16 +90,31 @@ class _VerilericekPageViewState extends State<VerilericekPageView> {
           for (var sinif in jsonFeedback) {
             await SinifDatabaseProvider().insertItem(SinifModel(id: sinif['id'], sinifAd: sinif['sinifAd']));
           }
+          snackBar = SnackBar(
+            content: Text('Sınıflar veritabanına eklendi'),
+            backgroundColor: Colors.green,
+          );
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
           break;
         case 'dersler':
           for (var ders in jsonFeedback) {
             await DersDatabaseProvider().insertItem(DersModel(id: ders['id'], dersAd: ders['dersAd'], sinifId: ders['sinifId']));
           }
+          snackBar = SnackBar(
+            content: Text('Dersler veritabanına eklendi'),
+            backgroundColor: Colors.green,
+          );
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
           break;
         case 'temrinler':
           for (var temrin in jsonFeedback) {
             await TemrinDatabaseProvider().insertItem(TemrinModel(id: temrin['id'], temrinKonusu: temrin['temrinKonusu'], dersId: temrin['dersId']));
           }
+          snackBar = SnackBar(
+            content: Text('Temrinler veritabanına eklendi'),
+            backgroundColor: Colors.green,
+          );
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
           break;
 
         case 'ogrenciler':
@@ -110,55 +126,66 @@ class _VerilericekPageViewState extends State<VerilericekPageView> {
                 ogrenciNu: ogrenci['ogrenciNu'],
                 ogrenciResim: ''));
           }
+          snackBar = SnackBar(
+            content: Text('Öğrenciler veritabanına eklendi'),
+            backgroundColor: Colors.green,
+          );
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
           break;
         default:
       }
     } else if (raw.statusCode == 404) {
-      //print('sayfa bulunamadı');
+      snackBar = SnackBar(
+        content: Text('Sunucuya ulaşılamadı...'),
+        backgroundColor: Colors.red,
+      );
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
     }
   }
-}
 
-Future<void> tumDatalariSil() async {
-  List<TemrinModel> temrinList = [];
-  List<TemrinNotModel> temrinnotList = [];
-  List<OgrenciModel> ogrenciList = [];
-  List<SinifModel> sinifList = [];
-  List<DersModel> dersList = [];
+  Future<void> tumDatalariSil() async {
+    List<TemrinModel> temrinList = [];
+    List<TemrinNotModel> temrinnotList = [];
+    List<OgrenciModel> ogrenciList = [];
+    List<SinifModel> sinifList = [];
+    List<DersModel> dersList = [];
 
-  temrinnotList = await TemrinNotDatabaseProvider().getList();
-  temrinList = await TemrinDatabaseProvider().getList();
-  ogrenciList = await OgrenciDatabaseProvider().getList();
-  sinifList = await SinifDatabaseProvider().getList();
-  dersList = await DersDatabaseProvider().getList();
+    temrinnotList = await TemrinNotDatabaseProvider().getList();
+    temrinList = await TemrinDatabaseProvider().getList();
+    ogrenciList = await OgrenciDatabaseProvider().getList();
+    sinifList = await SinifDatabaseProvider().getList();
+    dersList = await DersDatabaseProvider().getList();
 
-  for (var sinif in sinifList) {
-    SinifDatabaseProvider().removeItem(sinif.id ?? 0);
+    for (var sinif in sinifList) {
+      SinifDatabaseProvider().removeItem(sinif.id ?? 0);
+    }
+    print('siniflar silindi');
+
+    for (var ders in dersList) {
+      DersDatabaseProvider().removeItem(ders.id ?? 0);
+    }
+    print('dersler silindi');
+
+    for (var ogrenci in ogrenciList) {
+      OgrenciDatabaseProvider().removeItem(ogrenci.id ?? 0);
+    }
+    print('ogrenciler silindi');
+
+    for (var temrinnot in temrinnotList) {
+      TemrinNotDatabaseProvider().removeItem(temrinnot.id ?? 0);
+    }
+    print('Temrin notlar silindi');
+
+    for (var temrin in temrinList) {
+      TemrinDatabaseProvider().removeItem(temrin.id ?? 0);
+    }
+    print('Temrinler silindi');
+    SnackBar snackBar = SnackBar(content: Text('Tüm veriler silindi.'));
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
-  print('siniflar silindi');
 
-  for (var ders in dersList) {
-    DersDatabaseProvider().removeItem(ders.id ?? 0);
+  Future<void> _dialogGoster(BuildContext context) async {
+    bool durum = await customDialogFunc(context, 'Dikkatli olun. Eminmisiniz?', 'Tüm datalar silinsin mi?', 'Sil', 'İptal');
+    durum ? tumDatalariSil() : "";
   }
-  print('dersler silindi');
-
-  for (var ogrenci in ogrenciList) {
-    OgrenciDatabaseProvider().removeItem(ogrenci.id ?? 0);
-  }
-  print('ogrenciler silindi');
-
-  for (var temrinnot in temrinnotList) {
-    TemrinNotDatabaseProvider().removeItem(temrinnot.id ?? 0);
-  }
-  print('Temrin notlar silindi');
-
-  for (var temrin in temrinList) {
-    TemrinDatabaseProvider().removeItem(temrin.id ?? 0);
-  }
-  print('Temrinler silindi');
-}
-
-Future<void> _dialogGoster(BuildContext context) async {
-  bool durum = await customDialogFunc(context, 'Dikkatli olun. Eminmisiniz?', 'Tüm datalar silinsin mi?', 'Sil', 'İptal');
-  durum ? tumDatalariSil() : "";
 }
